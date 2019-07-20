@@ -14,6 +14,14 @@
 
   如果需要程序出错时向自己的邮箱发送邮件，需要修改sendEmail.py中的fromAdd, toAdd, \_pwd, 分别为发件邮箱地址，收件邮箱地址，发件邮箱[授权码](https://jingyan.baidu.com/article/8ebacdf065a1f149f65cd5b5.html "网易邮箱如何设置授权码")
 
+* #### 视频合并
+
+  下载的ts视频需要合并，windows下采用copy/b合并，linux下采用ffmpeg合并。
+
+  事实证明相较于ffmpeg合并的视频，采用copy/b合并的视频又大又卡又模糊（卡顿十分明显），因此推荐使用linux平台运行本爬虫。
+
+  欢迎大佬在评论区告知我window下更好的合并方法。
+
 ## 文件简介
 
 * #### 主程序
