@@ -16,34 +16,45 @@ def cmp(a,b):
 
 class Xvideos:
  
-    def __init__(self, url):
+    def __init__(self, url=''):
         self.url = url
+        self.video_num = -1
         self.root_path = r'xvideos'    #默认根目录为本程序所在目录下的xvideos文件夹
         self.num_thread = 10           #默认线程
         self.timeout = 10              #超时时间设置
         self.retry = 10                #最大重试次数
+        self.cover_num = -1
+        self.count = 0
         self.html = ''
         self.title = ''
-        self.success = True
+        self.image_and_prevideo_success = True
+        self.video_success = True
         self.wrong_ts_infor = ''
         self.wrong_pic_infor = ''
+        self.pic_url_list = []
         self.ts_file_list = []
         self.final_fail_ts_file_list = []
         self.final_fail_pic_list = []
 
 
+    def right_url(self):
+        if re.search(r'https?://www.xvideos.com/video\d+', self.url):
+            return True
+        else:
+            print('url不正确')
+            
     def should_pass(self, text_name):
         if not os.path.exists(text_name):
             return False
         else:
-            video_num = re.search(r'video(\d+)', self.url).group(1)
+            self.video_num = re.search(r'video(\d+)', self.url).group(1)
             with open(text_name, 'r') as f:
                 for line in f:
-                    if line[:-1] == video_num:
+                    if line[:-1] == self.video_num:
                         if text_name == 'SAVED.txt':
                             print('此视频已下载，跳过\n')
-                        elif text_name == 'DELETED.txt':
-                            print('此视频已被删除，跳过\n')
+                        elif text_name == 'NO EXISTS.txt':
+                            print('此视频不存在，跳过\n')
                         return True
                 return False
 
@@ -84,42 +95,78 @@ class Xvideos:
                 os.makedirs(self.dir_path)
             return True
         else:
-            print("No title! Maybe the url isn't xvideos or the video has deleted! Exit!")
+            print("No title! Maybe the video no exists! Exit!")
+            with open('NO EXISTS.txt','a+', encoding='utf-8') as f:
+                f.write(self.video_num+'\n')
             return False
 
 
-    def thread_image(self, pic_num, pic_key):
-        keyword = r"html5player\.%s\('(.*?)'\);" % pic_key
-        url = re.search(keyword, self.html).group(1)
-        img = self.repeat_request(url, fail_hint='"'+pic_num+'.jpg fail and retry '+'%d"%retry_times', final_fail_hint=pic_num+'.jpg final fail!')
-        if img:
-            img_type = url.split('.')[-1]
-            file_path = os.path.join(self.dir_path, pic_num+'.'+img_type)
-            with open(file_path, 'wb') as fb:
-                fb.write(img)
-            #print('PIC %s success'%pic_num)
-        else:
-            self.final_fail_pic_list.append(pic_num)
-            self.wrong_pic_infor += "{'%s': '%s'}\n"%(url,self.dir_path)
+    def thread_image(self, part_n):
+        for i in range(4):
+            pic_num = part_n*4+i
+            url = self.pic_url_list[pic_num]
+            img = self.repeat_request(url, fail_hint='"'+str(pic_num+1)+'.jpg fail and retry '+'%d"%retry_times', final_fail_hint=str(pic_num+1)+'.jpg final fail!')
+            if len(img)>200:
+                if not os.path.exists(os.path.join(self.dir_path, '图片')):
+                    os.makedirs(os.path.join(self.dir_path, '图片'))
+                file_path = os.path.join(self.dir_path, '图片', str(pic_num)+'.jpg')
+                with open(file_path, 'wb') as fb:
+                    fb.write(img)
+
+                if pic_num+1 == self.cover_num:
+                    file_path = os.path.join(self.dir_path, '1.jpg')
+                    with open(file_path, 'wb') as fb:
+                        fb.write(img)
+                if pic_num == 30 or pic_num == 31:    #最后两张是大纲缩略图
+                    file_path = os.path.join(self.dir_path, str(pic_num-28)+'.jpg')
+                    with open(file_path, 'wb') as fb:
+                        fb.write(img)
+                print("\r图片进度：%.2f%%" % (self.count/32*100), end=' ')
+                self.count += 1
+            else:
+                self.final_fail_pic_list.append(pic_num)
+                self.wrong_pic_infor += "{'%s': '%s'}\n"%(url,self.dir_path)
+                self.image_and_prevideo_success = False
 
 
     def download_image(self):
-        pic_dict = {'1': 'setThumbUrl',
-                    '2': 'setThumbUrl169',
-                    '3': 'setThumbSlide',
-                    '4': 'setThumbSlideBig'}
+        pic_dict = ['setThumbUrl169','setThumbSlide','setThumbSlideBig']
+        for pic_key in pic_dict:
+            if pic_key == 'setThumbUrl169':
+                content = re.search(r"html5player\.%s\('(.*?)(\d+?)\.jpg'\);"%pic_key,self.html)
+                pic_base_url = content.group(1)
+                self.cover_num = int(content.group(2))
+                for i in range(1,31):
+                    url =pic_base_url+'%d.jpg'%i
+                    self.pic_url_list.append(url)
+            else:
+                keyword = r"html5player\.%s\('(.*?)'\);" % pic_key
+                url = re.search(keyword, self.html).group(1)
+                self.pic_url_list.append(url)
+        
         thread_list = []
-        for i in pic_dict:
-            t = threading.Thread(target=self.thread_image, kwargs={'pic_num': i, 'pic_key': pic_dict[i]})
+        self.count = 0
+        for i in range(8):    #共32张图片，故开8线程，而不是沿用self.num_thread(因为担心不是整除32的，速度慢)
+            t = threading.Thread(target=self.thread_image, kwargs={'part_n': i})
             t.setDaemon(True)    #设置守护进程
             t.start()
             thread_list.append(t)
         for t in thread_list:
             t.join()    #阻塞主进程，进行完所有线程后再运行主进程
-
+    
+    
+    def download_preview_video(self):    #下载预览视频     
+        re_str = r'/videos/thumbs169/(.*?)/mozaique'
+        key = re.search(re_str, self.html).group(1)
+        url = r'https://img-hw.xvideos-cdn.com/videos/videopreview/%s_169.mp4'%key    #以后下载预览视频失败时先检查对应的解析域名是否改变了
+        video_data = self.repeat_request(url, fail_hint='preview_video fail and retry '+'%d"%retry_times', final_fail_hint='preview_video final fail!')
+        if len(video_data)>200:
+            file_path = os.path.join(self.dir_path, '预览.mp4')
+            with open(file_path, 'wb') as f:
+                f.write(video_data)
+                
 
     def download_ts_file(self, ts_url):    
-        #print(1,ts_url)
         '''
         re_str = r'(?:hls-\d{3,4}p(\d+.ts))|(?:hls-\d{3,4}p-[a-zA-Z0-9]{5}(\d+.ts))'
         #目前见过两种，相对路径的前缀分别形如hls-720p3.ts， hls-360p-ba36e0.ts
@@ -138,12 +185,12 @@ class Xvideos:
                 f.write(ts_file)
                 f.flush()
             self.count += 1
-            print("\r下载进度：%.2f%%" % (self.count/self.ts_num*100), end='')
+            print("\r视频进度：%.2f%%" % (self.count/self.ts_num*100), end=' ')
             self.ts_file_list.append(ts_name)
         else:
             with open('ERROR.txt', 'a+', encoding='utf-8') as f:
                 f.write("{'%s': '%s'}\n"%(ts_url, self.dir_path))
-            self.success = False
+            self.video_success = False
             self.final_fail_ts_file_list.append(ts_name)
             self.wrong_ts_infor += "{'%s': '%s'}\n"%(ts_url,self.dir_path)    #最后写入信息.txt
 
@@ -153,7 +200,7 @@ class Xvideos:
             try:
                 self.download_ts_file(ts_url)
             except:
-                self.success = False
+                self.video_success = False
                 raise
         
         
@@ -176,6 +223,7 @@ class Xvideos:
             cmd_str += 'copy/b %s "%s" & ' % (input_file, output_file)
             for i in self.ts_file_list:
                 cmd_str += 'del /Q %s $' % i
+            #print(cmd_str)
                 
             os.system(cmd_str)
             #print(os.popen(cmd_str).read())    #os.popen()除了可以实现os.system的功能外，还多了一个输出控制台内容的功能
@@ -194,7 +242,6 @@ class Xvideos:
                 dir_path2 = os.path.join(run_path, self.dir_path)        #最终都获得绝对路径
             
             self.ts_file_list = sorted(self.ts_file_list,key=functools.cmp_to_key(cmp))
-            #print(self.ts_file_list)
             input_file = '|'.join(self.ts_file_list)
             output_file = self.title + '.mp4'
             
@@ -209,34 +256,25 @@ class Xvideos:
 
     def download_video(self):    #结构为：获取ts链接，多线程爬取，合并
         m3u8_url = re.search(r"html5player\.setVideoHLS\('(.*?)'\);",self.html).group(1)    #总的m3u8链接
-        #print(m3u8_url)
         m3u8_content = self.repeat_request(m3u8_url, fail_hint="'get m3u8 fail and retry %d'%retry_times", final_fail_hint='get m3u8 fail! Exit!')    #内含不同的清晰度所对应的m3u8链接
         if m3u8_content:
             base_url = re.search(r"(.*?)hls.m3u8", m3u8_url).group(1)    #从m3u8_url中取出，留待拼接
             m3u8_content = m3u8_content.decode('utf-8')
-            #print('m3u8_content ', m3u8_content)
-            #print()
             definition_list = re.findall(r'NAME="(.*?)p"', m3u8_content)
             max_definition = max(definition_list)    #找到最高清晰度
-            #print(max_definition)
             line_list = m3u8_content.split('\n')
             for line in line_list:
                 if 'hls-' in line and max_definition in line:
                     max_definition_m3u8_url = line    #最高清晰度的m3u8链接(相对路径)
-                    #print(max_definition_m3u8_url)
             max_definition_m3u8_url = base_url + max_definition_m3u8_url
-            #print('max_definition_m3u8_url', max_definition_m3u8_url)
             max_definition_m3u8_content = self.repeat_request(max_definition_m3u8_url, fail_hint="'get max_definition_m3u8 fail and retry %d'%retry_times", final_fail_hint='get max_definition_m3u8 final fail! Exit!')    #内含该m3u8视频的ts文件信息
             if max_definition_m3u8_content:
                 max_definition_m3u8_content = max_definition_m3u8_content.decode('utf-8')
-                #print('max_definition_m3u8_content:',max_definition_m3u8_content)
                 self.ts_url_list = []
                 for line in max_definition_m3u8_content.split('\n'):
                     if '.ts' in line:
                         self.ts_url_list.append(base_url + line)
                 self.ts_num = len(self.ts_url_list)
-                #print(1,self.ts_url_list)
-                #print('has gotten ts urls')
                 '''
                 拿到ts文件链接的流程是：
                 从视频页源代码中找到html5player.setVideoHLS，拿到总的m3u8链接(绝对路径)
@@ -250,6 +288,7 @@ class Xvideos:
                     self.num_thread = self.ts_num    #线程数若大于ts文件数，则线程数减少到ts文件数
                 part = self.ts_num // self.num_thread  # 分块。如果不能整除，最后一块应该多几个字节
                 thread_list = []
+                self.count = 0
                 for i in range(self.num_thread):
                     start = part * i    #第part个线程的起始url下标
                     if i == self.num_thread - 1:   #最后一块
@@ -264,12 +303,11 @@ class Xvideos:
                 for t in thread_list:
                     t.join()    #阻塞主进程，进行完所有线程后再运行主进程
                 
-                if self.success:    #图片失败不算失败
+                if self.video_success:    
                     self.merge_ts_file()
-                    print('\n%s 下载完成' % self.title)
-                    video_num = re.search(r'video(\d+)', self.url).group(1)
+                    print('\n%s 下载完成\n' % self.title)
                     with open('SAVED.txt','a+', encoding='utf-8') as f:
-                        f.write(video_num+'\n')
+                        f.write(self.video_num+'\n')
                 else:
                     print()
                     if self.final_fail_ts_file_list:
@@ -283,6 +321,8 @@ class Xvideos:
         file_path = os.path.join(self.dir_path, '信息.txt')
         with open(file_path, 'w', encoding='utf-8') as f:
             f.write('标题：\n%s\n网址：\n%s\n'%(self.title, self.url))
+            
+        
             if self.final_fail_pic_list:
                 for i in self.final_fail_pic_list:
                     f.write(i,'.jpg ')
@@ -294,30 +334,20 @@ class Xvideos:
                     
 
     def download(self):
-        if not self.is_saved():
+        if self.right_url() and not self.should_pass('SAVED.txt') and not self.should_pass('NO EXISTS.txt'):
             self.count = 0
             self.html = self.repeat_request(self.url, fail_hint="'get html fail and retry %d'%retry_times", final_fail_hint='get html fianl fail! Exit!')
             if self.html:
                 self.html = self.html.decode('utf-8')
                 if self.mkdir():
                     self.download_image()
+                    self.download_preview_video()
                     self.download_video()
                     self.write()
                     return True
-                else:
-                    return False
-                    
-
-def download(url):
-    xvideos = Xvideos(url)
-    xvideos.download()
     
 
 if __name__ == '__main__':
-    #url = 'https://www.xvideos.com/video40421333/_'
-    #url = 'https://www.xvideos.com/video40807117/_' 
-    #url = 'https://www.xvideos.com/video41666493/_'
-    #url = 'https://www.xvideos.com/video31640165/019_helen_part_1_-_fuckasianbeauty.com'
-    #url = 'https://www.xvideos.com/video42935697/_-_._._hx410410'
     url = input('请输入网址：\n')
-    download(url)
+    xvideos = Xvideos(url)
+    xvideos.download()

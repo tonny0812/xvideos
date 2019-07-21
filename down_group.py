@@ -1,11 +1,17 @@
 import down_one
 from bs4 import BeautifulSoup
-import time, os, re
+import time, os, re, traceback
 
 
-def download_videos_of_one_page(url, page_type):    #page_type表示该页面是什么类型的，比如说是最佳影片，比如说搜索关键字是XX
+def download_videos_of_one_page(url='', page_type='01-单页下载'):    #page_type表示该页面是什么类型的，比如说是最佳影片，比如说搜索关键字是XX
+    if traceback.extract_stack()[-2][2] == 'choice':
+        url = input('请输入网址：')
+        dir_name = input('请输入文件夹名称（最终文件存放于root_path/01-单页下载/自定义文件夹名）:')
     xvideos = down_one.Xvideos()
-    xvideos.root_path = os.path.join(xvideos.root_path, page_type)
+    if traceback.extract_stack()[-2][2] == 'choice':
+        xvideos.root_path = os.path.join(xvideos.root_path, page_type, dir_name)
+    else:
+        xvideos.root_path = os.path.join(xvideos.root_path, page_type)
     html = xvideos.repeat_request(url, final_fail_hint='request %s final fail'%url)
     if html:
         soup = BeautifulSoup(html, 'lxml')
@@ -17,44 +23,31 @@ def download_videos_of_one_page(url, page_type):    #page_type表示该页面是
             xvideos.url = url
             xvideos.download()
             print()
-            
-            
-def search_videos_pages(n=1):    #视频搜索    #n=1表示默认只下载第一页的所有视频
+
+
+def search_videos_pages():    #视频搜索    #n=1表示默认只下载第一页的所有视频
     search_key = input('请输入搜索关键字：')
     url = r'https://www.xvideos.com/?k=%s' % search_key
-    for page in range(n):
+    n = input('请输入爬取页数：')
+    for page in range(int(n)):
         if page != 0:
             url = url + r'&p=%d'%page    #第二页的?p=1,依次类推
-        download_videos_of_one_page(url, os.path.join('01-视频搜索', search_key))
+        print('第%s页，共%s页' % (page+1, int(n)))
+        download_videos_of_one_page(url, os.path.join('02-视频搜索', search_key))
 
 
-def best_videos_pages(n=1):    #最佳影片
+def best_videos_pages():    #最佳影片
     data = input('请输入年月，格式形如2019-06：')
     url = r'https://www.xvideos.com/best/%s/' % data
-    for page in range(n):
+    n = input('请输入爬取页数：')
+    for page in range(int(n)):
         if page != 0:
             url = url + str(range)
-        download_videos_of_one_page(url, os.path.join('02-最佳影片', data))    #视频文件夹保存在root_path/02-最佳影片/年月
+        print('第%s页，共%s页' % (page+1, int(n)))
+        download_videos_of_one_page(url, os.path.join('03-最佳影片', data))    #视频文件夹保存在root_path/02-最佳影片/年月
 
-'''
-def tag_videos_pages(n=1):    #标签
-    url = 'https://www.xvideos.com/c/Teen-13'
-    xvideos = down_one.Xvideos()
-    html = xvideos.repeat_request(url, final_fail_hint='request %s final fail'%url)
-    if html:
-        soup = BeautifulSoup(html, 'lxml')
-        result = soup.select('h2.mobile-hide span.alt span.text-danger')
-        if result:
-            tag_ley = result[0].string
-        else:
-            print('此网页并不是标签类型的网页哦，大概率是搜索的关键字')
-    for page in range(n):
-        if page != 0:
-            url = url + str(range)
-        download_videos_of_one_page(url, os.path.join('02-最佳影片', data))
-'''
 
-def tag_videos_pages(n=1):    #标签
+def tag_videos_pages():    #视频标签
     '''
     标签的url的页数get传值有好几种（并不通用）:
     一种是关键字搜索类型的（本质上就是搜索了标签中的字），如https://www.xvideos.com/?k=3d&p=2
@@ -69,7 +62,7 @@ def tag_videos_pages(n=1):    #标签
     if os.path.exists('TAG NAME.txt'):
         with open('TAG NAME.txt','r',encoding='utf-8') as f1:
             for line in f1:
-                if url in line:
+                if url+' ' in line:
                     tag_name = re.search(r' (.*?)\n', line).group(1)#TAG NAME.txt中的一行，前为url，后为tag_name,空格间隔
                     if input('本标签名称曾被指定为%s，是否沿用该名称？(y/n)'%tag_name) != 'y':
                         with open('TAG NAME.txt','w',encoding='utf-8') as f2:    #不沿用旧名称则将旧名称从文件中删掉
@@ -100,25 +93,38 @@ def tag_videos_pages(n=1):    #标签
         before = ''
         after = ''
         for i in range(len(page2_url)):
-            if page2_url[i] != page3_url[i]:    #通过比较该标签的第二页和第三页的url的不同找出页数在url中的位置
+            if page2_url[i] != page3_url[i]:    #通过比较该标签的第二页和第三页的url的不同找出页数在url中的位置   #如果视频只有一页或两页，会出错
                 before = page2_url[:i]
                 after = page2_url[i+1:]
                 break
         if before:    #如果页数在url的最后，则after是空串
-            for page in range(n):
+            n = input('请输入爬取页数：')
+            for page in range(int(n)):
                 if page != 0:
                     url = 'https://www.xvideos.com' + before + str(page) + after    #url去除不同部分，与页数拼接得到第page页的url
                     print(url)
-                download_videos_of_one_page(url, os.path.join('03-视频标签', tag_name))    #视频文件夹保存在root_path/02-最佳影片/年月
+                print('第%s页，共%s页' % (page+1, int(n)))
+                download_videos_of_one_page(url, os.path.join('04-视频标签', tag_name))    #视频文件夹保存在root_path/02-最佳影片/年月
         else:
             print('出错了，请检查该标签的第二页和第三页的url是否存在不同')
 
 
+def choice():
+    choice_type = input('请选择批量下载的类型：\n01-单页下载    02-视频搜索\n03-最佳影片    04-视频标签\nPS：04-视频标签的爬取必须保证视频页数大于等于3，否则请使用1次或2次01-单页下载\n键入两位数字：')
+    if choice_type == '01':
+        download_videos_of_one_page()
+    if choice_type == '02':
+        search_videos_pages()
+    if choice_type == '03':
+        best_videos_pages()
+    if choice_type == '04':
+        tag_videos_pages()
+
 if __name__ == '__main__':
     url = 'https://www.xvideos.com/'
     url = 'https://www.xvideos.com/history'
-    #url = 'https://www.xvideos.com/lang/japanese'
+    #url = 'https://www.xvideos.com/lang/japanese'  ok
     #url = 'https://www.xvideos.com/lang/korean/1'
     #search_videos_pages(2)
     
-    tag_videos_pages(2)
+    choice()
