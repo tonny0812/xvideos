@@ -24,9 +24,9 @@ linux：ffmpeg
 
   下载的ts视频需要合并，windows下采用copy/b合并，linux下采用ffmpeg合并。
 
-  事实证明相较于ffmpeg合并的视频，采用copy/b合并的视频又大又卡又模糊（卡顿十分明显），因此推荐使用linux平台运行本爬虫。
+  事实证明相较于ffmpeg合并的视频，采用copy/b合并的视频又大又卡又模糊（卡顿十分明显），而且ts文件过多时无法合并，因此推荐使用linux平台运行本爬虫。
 
-  欢迎大佬在评论区告知我window下更好的合并方法。
+  欢迎大佬在评论区告知我window下更好的合并方法。（发现ffmpeg也可以在windows上安装，然后在python中通过subprocess.call(command, shell=True)调用，不过懒得写了，反正我用不到，谁家的爬虫会在自己的电脑上跑啊。有需要的可以自己写一下，不麻烦）
 
 ## 文件简介
 
@@ -44,7 +44,7 @@ linux：ffmpeg
 
   **exception_handling.py** 程序异常时写入异常日志，并发送邮件
 
-  **get_favorite_urls.py** 手动从浏览器中导出收藏夹，使用本程序可提取出其中的xvideos的url
+  **get_favorite_urls.py** 手动从浏览器中导出收藏夹后，使用本程序可提取出其中的xvideos的url
 
 * #### 其他文件
 
@@ -66,12 +66,12 @@ pass（过几天写）
 
 ## 流水账
 
+* 2019.7.21
+  * 发现windows下ts文件过多时似乎不会合并，网上也有人遇到这种问题，可能是copy的锅
 * 2019.7.20 
-
   * 晚 增添down_group.py
 
   * 午 基本完成
-
 * 2019.7.16 
 
   * 晚 开始琢磨写这个爬虫
