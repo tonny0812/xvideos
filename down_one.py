@@ -45,10 +45,10 @@ class Xvideos:
             print('url不正确')
             
     def should_pass(self, text_name):
+        self.video_num = re.search(r'video(\d+)', self.url).group(1)
         if not os.path.exists(text_name):
             return False
         else:
-            self.video_num = re.search(r'video(\d+)', self.url).group(1)
             with open(text_name, 'r') as f:
                 for line in f:
                     if line[:-1] == self.video_num:
@@ -119,7 +119,7 @@ class Xvideos:
             pic_num = part_n*4+i
             url = self.pic_url_list[pic_num]
             img = self.repeat_request(url, fail_hint='"'+str(pic_num+1)+'.jpg fail and retry '+'%d"%retry_times', final_fail_hint=str(pic_num+1)+'.jpg final fail!')
-            if len(img)>200:
+            if img:
                 if not os.path.exists(os.path.join(self.dir_path, '图片')):
                     os.makedirs(os.path.join(self.dir_path, '图片'))
                 file_path = os.path.join(self.dir_path, '图片', str(pic_num)+'.jpg')
@@ -174,7 +174,7 @@ class Xvideos:
         key = re.search(re_str, self.html).group(1)
         url = r'https://img-hw.xvideos-cdn.com/videos/videopreview/%s_169.mp4'%key    #以后下载预览视频失败时先检查对应的解析域名是否改变了
         video_data = self.repeat_request(url, fail_hint='preview_video fail and retry '+'%d"%retry_times', final_fail_hint='preview_video final fail!')
-        if len(video_data)>200:
+        if video_data:
             file_path = os.path.join(self.dir_path, '预览.mp4')
             with open(file_path, 'wb') as f:
                 f.write(video_data)
@@ -360,6 +360,7 @@ class Xvideos:
                     self.write()
                     return True
     
+
 
 if __name__ == '__main__':
     url = input('请输入网址：\n')

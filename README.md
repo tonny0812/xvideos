@@ -149,11 +149,14 @@ linux：`apt-get install ffmpeg`
 
   ```
   sudo /etc/init.d/privoxy start
-  sudo /etc/init.d/privoxy reload   # 不重启服务的情况下重新加载配置
+  sudo /etc/init.d/privoxy force-reload   # 不重启服务的情况下重新加载配置
   ```
 
 参考：
 
+[Linux安装并使用ssr客户端](https://blog.mrwang.pw/2018/12/13/Linux%E5%AE%89%E8%A3%85%E5%B9%B6%E4%BD%BF%E7%94%A8ssr/ )
+
+[使用 privoxy 转发 socks 到 http ](http://einverne.github.io/post/2018/03/privoxy-forward-socks-to-http.html )
 
 ## 更新日志
 
