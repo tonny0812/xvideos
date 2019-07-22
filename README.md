@@ -158,12 +158,21 @@ linux：`apt-get install ffmpeg`
 ## 更新日志
 
 * 2019.7.22
+
+  * 文本名称包含html实体时则将html实体转换，如&hel lip;转换为省略号
+
   * 解决OSError: [Errno 36] File name too long
+
 * 2019.7.21
+
   * 发现windows下ts文件过多时似乎不会合并，网上也有人遇到这种问题，可能是copy命令的锅
+
 * 2019.7.20 
+
   * 晚 增添down_group.py
 
   * 午 基本完成
+
 * 2019.7.16 
+
   * 晚 开始琢磨写这个爬虫
