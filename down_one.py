@@ -173,7 +173,7 @@ class Xvideos:
         re_str = r'/videos/thumbs169/(.*?)/mozaique'
         key = re.search(re_str, self.html).group(1)
         url = r'https://img-hw.xvideos-cdn.com/videos/videopreview/%s_169.mp4'%key    #以后下载预览视频失败时先检查对应的解析域名是否改变了
-        video_data = self.repeat_request(url, fail_hint='preview_video fail and retry '+'%d"%retry_times', final_fail_hint='preview_video final fail!')
+        video_data = self.repeat_request(url, fail_hint='"preview_video fail and retry %d"%retry_times', final_fail_hint='preview_video final fail!')
         if video_data:
             file_path = os.path.join(self.dir_path, '预览.mp4')
             with open(file_path, 'wb') as f:
