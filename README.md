@@ -6,7 +6,7 @@
 
 ## 依赖
 
-python3：requests，bs4
+python3：requests，bs4，lxml
 
 linux：`apt-get install ffmpeg`
 
