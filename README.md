@@ -69,7 +69,7 @@ linux：ffmpeg
 
 ## 代理介绍
 
-*  ### windows
+* ### windows
 
   若使用ShadowsocksR客户端客户端科学上网，且使用默认设置，则该程序拿来就能用
 
@@ -86,7 +86,7 @@ linux：ffmpeg
 * 2019.7.22
   * 解决OSError: [Errno 36] File name too long
 * 2019.7.21
-  * 发现windows下ts文件过多时似乎不会合并，网上也有人遇到这种问题，可能是copy的锅
+  * 发现windows下ts文件过多时似乎不会合并，网上也有人遇到这种问题，可能是copy命令的锅
 * 2019.7.20 
   * 晚 增添down_group.py
 
