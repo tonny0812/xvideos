@@ -321,7 +321,7 @@ class Xvideos:
                     self.merge_ts_file()
                     print('\n%s 下载完成\n' % self.title)
                     with open('SAVED.txt','a+', encoding='utf-8') as f:
-                        f.write(self.video_num+'\n')
+                        f.write(str(self.video_num)+'\n')
                 else:
                     print()
                     if self.final_fail_ts_file_list:

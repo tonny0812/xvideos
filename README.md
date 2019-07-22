@@ -6,9 +6,9 @@
 
 ## 依赖
 
-python3：requests
+python3：requests，bs4
 
-linux：ffmpeg
+linux：ffmpeg `apt-get install ffmpeg`
 
 ## 写在前面
 
@@ -79,7 +79,78 @@ linux：ffmpeg
 
   **以下为程序运行环境配置**
 
-  等会写
+  (以下操作在阿里云Ubuntu16.4上通过)
+
+  `apt-get update` 
+
+  更新源
+
+  `sudo apt-get install git` 
+
+  安装git
+
+  `git clone http://git.mrwang.pw/Reed/Linux_ssr_script.git`
+
+   在具有写权限的目录执行如下命令获取到ssr脚本仓库
+
+  `cd Linux_ssr_script && chmod +x ./ssr` 
+
+  进入刚刚克隆的仓库目录并赋予`ssr`脚本执行权限
+
+  `sudo mv ./ssr /usr/local/sbin/`
+
+  将脚本放入可执行脚本的目录
+
+  `ssr install `
+
+  安装ssr，脚本会下载ssr客户端并移动到合适的位置
+
+  `ssr config`
+
+  编辑配置文件，在里面输入你的节点连接信息，然后保存。
+
+  ​	配置文件内容形如
+
+  ```
+  {
+      "server": "服务器地址",
+      "local_address": "127.0.0.1",
+      "local_port": 1080,
+      "timeout": 300,
+      "workers": 1,
+      "server_port": 80,
+      "password": "密码",
+      "method": "none",
+      "obfs": "http_post",
+      "obfs_param": "download.windowsupdate.com",
+      "protocol": "auth_chain_a",
+      "protocol_param": "3412:H2LChD"
+  }
+  ```
+
+  ​	科学上网的节点这里不提供，请自行准备
+
+  `sudo apt install privoxy` 
+
+  安装privoxy
+
+  `vim /etc/privoxy/config`
+
+  ​	默认的配置文件地址在 `/etc/privoxy/config` 目录下。假设本地 1080 端口已经启动，然后要将本地 1080 socks5 代理转成 http 代理，重要的配置只有两行。
+
+  ```
+  # 把本地 HTTP 流量转发到本地 1080 SOCKS5 代理
+  forward-socks5t / 127.0.0.1:1080 .
+  # 可选，默认监听本地连接
+  listen-address 127.0.0.1:8118
+  ```
+
+  使用如下命令启动
+
+  ```
+  sudo /etc/init.d/privoxy start
+  sudo /etc/init.d/privoxy reload   # 不重启服务的情况下重新加载配置
+  ```
 
 ## 更新日志
 
