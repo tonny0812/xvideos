@@ -1,5 +1,6 @@
 import re
 import os
+import html
 import requests
 import threading
 import functools
@@ -84,15 +85,27 @@ class Xvideos:
 
 
     def mkdir(self):
-        
         self.title = re.search(r'<h2 class="page-title">(.*?)<span class="duration">', self.html)
         if self.title:
             self.title = self.title.group(1).rstrip()
             self.title = re.sub(r'[\\\*\?\|/:"<>\.]', '', self.title)
+            self.title = html.unescape(self.title)    #转换html实体，如&hellip;转换为省略号
             print('名称：', self.title)
             self.dir_path = os.path.join(self.root_path, self.title)
-            if not os.path.exists(self.dir_path):
-                os.makedirs(self.dir_path)
+            if not os.path.exists(self.dir_path):                
+                try:
+                    os.makedirs(self.dir_path)
+                except OSError:    #linux路径过长会OSError: [Errno 36] File name too long:    #可参考https://stackoverflow.com/questions/34503540/why-does-python-give-oserror-errno-36-file-name-too-long-for-filename-short/34503913
+                    dir_path_len = len(self.dir_path)
+                    while True:
+                        try:
+                            dir_path_len -= 1
+                            self.dir_path = self.dir_path[:dir_path_len]
+                            os.makedirs(self.dir_path)
+                            print(self.dir_path)
+                            break
+                        except:
+                            pass
             return True
         else:
             print("No title! Maybe the video no exists! Exit!")
@@ -121,8 +134,8 @@ class Xvideos:
                     file_path = os.path.join(self.dir_path, str(pic_num-28)+'.jpg')
                     with open(file_path, 'wb') as fb:
                         fb.write(img)
-                print("\r图片进度：%.2f%%" % (self.count/32*100), end=' ')
                 self.count += 1
+                print("\r图片进度：%.2f%%" % (self.count/32*100), end=' ')
             else:
                 self.final_fail_pic_list.append(pic_num)
                 self.wrong_pic_infor += "{'%s': '%s'}\n"%(url,self.dir_path)
@@ -153,6 +166,7 @@ class Xvideos:
             thread_list.append(t)
         for t in thread_list:
             t.join()    #阻塞主进程，进行完所有线程后再运行主进程
+        print()
     
     
     def download_preview_video(self):    #下载预览视频     
@@ -331,7 +345,7 @@ class Xvideos:
                 for i in self.final_fail_ts_file_list:
                     f.write(i+' ')
                 f.write('\n\nfinal fail! NO merge ts_file!\n\n%s'%self.wrong_ts_infor)
-                    
+
 
     def download(self):
         if self.right_url() and not self.should_pass('SAVED.txt') and not self.should_pass('NO EXISTS.txt'):

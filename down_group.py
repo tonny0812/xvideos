@@ -1,3 +1,4 @@
+from exception_handling import log_exception
 import down_one
 from bs4 import BeautifulSoup
 import time, os, re, traceback
@@ -109,16 +110,18 @@ def tag_videos_pages():    #视频标签
             print('出错了，请检查该标签的第二页和第三页的url是否存在不同')
 
 
+@log_exception
 def choice():
-    choice_type = input('请选择批量下载的类型：\n01-单页下载    02-视频搜索\n03-最佳影片    04-视频标签\nPS：04-视频标签的爬取必须保证视频页数大于等于3，否则请使用1次或2次01-单页下载\n键入两位数字：')
-    if choice_type == '01':
+    choice_type = input('请选择批量下载的类型：\n1-单页下载    2-视频搜索\n3-最佳影片    4-视频标签\n\nPS：4-视频标签的爬取必须保证视频页数大于等于3，否则请使用1次或2次1-单页下载\n请键入对应数字：')
+    if choice_type == '1':
         download_videos_of_one_page()
-    if choice_type == '02':
+    if choice_type == '2':
         search_videos_pages()
-    if choice_type == '03':
+    if choice_type == '3':
         best_videos_pages()
-    if choice_type == '04':
+    if choice_type == '4':
         tag_videos_pages()
+
 
 if __name__ == '__main__':
     url = 'https://www.xvideos.com/'
@@ -126,5 +129,8 @@ if __name__ == '__main__':
     #url = 'https://www.xvideos.com/lang/japanese'  ok
     #url = 'https://www.xvideos.com/lang/korean/1'
     #search_videos_pages(2)
-    
+    start = time.perf_counter()
     choice()
+    end = time.perf_counter()
+    print('任务执行共%d小时%d分%.2f秒' % ((end-start)//3600,(end-start)%3600//60,(end-start)%60))
+    

@@ -14,7 +14,14 @@ linux：ffmpeg
 
 * #### 关于代理
 
-  本程序默认在windows下采用1080端口的http协议代理，在linux下采用8118端口的http协议代理（小白搞不懂的话后面会简单介绍如何搭建能运行本程序的代理环境，大神可以自己在down_one.py的Xvideos类的request函数中修改proxies的值来更换代理方式，墙外人可以删掉代理的语句）
+  本程序默认：
+
+  * windows下采用http协议代理，端口为1080
+  * linux下采用http协议代理，端口为8118
+
+  可在down_one.py的Xvideos类的request函数中修改proxies的值来更换代理方式
+
+  后面会简单介绍如何搭建能运行本程序的代理环境
 
 * #### 关于邮件
 
@@ -50,6 +57,8 @@ linux：ffmpeg
 
   **xvideos_urls.txt** down_some.py从此文本中读入要爬取的视频网址
 
+  **xvideos.log**  异常日志
+
   **SAVED.txt** 存放已经下载的视频的编号
 
   **NO EXISTS.txt** 存放不存在或被删除的视频的编号
@@ -58,14 +67,24 @@ linux：ffmpeg
 
   **TAG NAME.txt** 存放自己指定的标签所对应的名称（用于通过down_group.py下载某个标签的前n页视频时，若曾经给此标签指定过名称，则提示是否沿用曾经指定的名称）
 
-  **xvideos.log**  异常日志
-
 ## 代理介绍
 
-pass（过几天写）
+*  ### windows
 
-## 流水账
+  若使用ShadowsocksR客户端客户端科学上网，且使用默认设置，则该程序拿来就能用
 
+* ### linux
+
+  流程：provoxy 监听8118端口的http流量，将其转发给1080端口的sock5代理，并走 shadowsocks 到墙外。
+
+  **以下为程序运行环境配置**
+
+  等会写
+
+## 更新日志
+
+* 2019.7.22
+  * 解决OSError: [Errno 36] File name too long
 * 2019.7.21
   * 发现windows下ts文件过多时似乎不会合并，网上也有人遇到这种问题，可能是copy的锅
 * 2019.7.20 
