@@ -8,7 +8,7 @@
 
 python3：requests，bs4
 
-linux：ffmpeg `apt-get install ffmpeg`
+linux：`apt-get install ffmpeg`
 
 ## 写在前面
 
@@ -152,6 +152,9 @@ linux：ffmpeg `apt-get install ffmpeg`
   sudo /etc/init.d/privoxy reload   # 不重启服务的情况下重新加载配置
   ```
 
+参考：
+
+
 ## 更新日志
 
 * 2019.7.22
@@ -163,5 +166,4 @@ linux：ffmpeg `apt-get install ffmpeg`
 
   * 午 基本完成
 * 2019.7.16 
-
   * 晚 开始琢磨写这个爬虫
