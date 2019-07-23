@@ -28,22 +28,26 @@ def download_videos_of_one_page(url='', page_type='01-单页下载'):    #page_t
 
 def search_videos_pages():    #视频搜索    #n=1表示默认只下载第一页的所有视频
     search_key = input('请输入搜索关键字：')
-    url = r'https://www.xvideos.com/?k=%s' % search_key
+    base_url = r'https://www.xvideos.com/?k=%s' % search_key
     n = input('请输入爬取页数：')
     for page in range(int(n)):
         if page != 0:
-            url = url + r'&p=%d'%page    #第二页的?p=1,依次类推
+            url = base_url + r'&p=%d'%page    #第二页的?p=1,依次类推
+        else:
+            url = base_url
         print('第%s页，共%s页' % (page+1, int(n)))
         download_videos_of_one_page(url, os.path.join('02-视频搜索', search_key))
 
 
 def best_videos_pages():    #最佳影片
     data = input('请输入年月，格式形如2019-06：')
-    url = r'https://www.xvideos.com/best/%s/' % data
+    base_url = r'https://www.xvideos.com/best/%s/' % data
     n = input('请输入爬取页数：')
     for page in range(int(n)):
         if page != 0:
-            url = url + str(range)
+            url = base_url + str(page)
+        else:
+            url = base_url
         print('第%s页，共%s页' % (page+1, int(n)))
         download_videos_of_one_page(url, os.path.join('03-最佳影片', data))    #视频文件夹保存在root_path/02-最佳影片/年月
 

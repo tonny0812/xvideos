@@ -10,6 +10,8 @@ python3：requests，bs4，lxml
 
 linux：`apt-get install ffmpeg`
 
+windows：[ffmepg](<https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-20190722-3883c9d-win64-static.zip> "windows ffmpeg x64下载" )（可以使用系统自带的copy/b下位代替）
+
 ## 写在前面
 
 * #### 关于代理
@@ -19,9 +21,15 @@ linux：`apt-get install ffmpeg`
   * windows下采用http协议代理，端口为1080
   * linux下采用http协议代理，端口为8118
 
-  可在down_one.py的Xvideos类的request函数中修改proxies的值来更换代理方式
+  可在 **down_one.py** 中修改proxies的值来更换代理方式
 
   后面会简单介绍如何搭建能运行本程序的代理环境
+
+* #### 变量更改
+
+  * 根目录root_path，线程数num_thread，超时时限timeout，重新请求次数retry在 **down_one.py** 中修改
+
+  * windows下ffmpeg的绝对路径ffmpeg_path，windows下使用copy/b或是ffmpeg的关联量win_merge在 **merge_ts_file.py** 中修改
 
 * #### 关于邮件
 
@@ -29,11 +37,10 @@ linux：`apt-get install ffmpeg`
 
 * #### 视频合并
 
-  下载的ts视频需要合并，windows下采用copy/b合并，linux下采用ffmpeg合并。
+  下载的ts视频需要合并，windows下可自行选择copy/b或ffmpeg合并，linux下采用ffmpeg合并。
 
-  事实证明相较于ffmpeg合并的视频，采用copy/b合并的视频又大又卡又模糊（卡顿十分明显），而且ts文件过多时无法合并，因此推荐使用linux平台运行本爬虫。
+  事实证明相较于ffmpeg合并的视频，采用copy/b合并的视频又大又卡又模糊（卡顿十分明显），请自行斟酌。
 
-  欢迎大佬在评论区告知我window下更好的合并方法。（发现ffmpeg也可以在windows上安装，然后在python中通过subprocess.call(command, shell=True)调用，不过懒得写了，反正我用不到，谁家的爬虫会在自己的电脑上跑啊。有需要的可以自己写一下，不麻烦）
 
 ## 文件简介
 
@@ -46,6 +53,8 @@ linux：`apt-get install ffmpeg`
   **down_group.py** 下载关键字搜索出来的视频、最佳影片、标签视频
 
 * #### 辅助程序
+
+  **merge_ts_file.py** 合并ts视频文件
 
   **sendEmail.py** 发送邮件
 
@@ -67,6 +76,8 @@ linux：`apt-get install ffmpeg`
 
   **TAG NAME.txt** 存放自己指定的标签所对应的名称（用于通过down_group.py下载某个标签的前n页视频时，若曾经给此标签指定过名称，则提示是否沿用曾经指定的名称）
 
+  **information.txt** 写入网页的标题与网址
+
 ## 代理介绍
 
 * ### windows
@@ -75,7 +86,7 @@ linux：`apt-get install ffmpeg`
 
 * ### linux
 
-  流程：provoxy 监听8118端口的http流量，将其转发给1080端口的sock5代理，并走 shadowsocks 到墙外。
+  代理过程：provoxy 监听8118端口的http流量，将其转发给1080端口的sock5代理，并走 shadowsocks 到墙外。
 
   **以下为程序运行环境配置**
 
@@ -161,6 +172,15 @@ linux：`apt-get install ffmpeg`
 [使用 privoxy 转发 socks 到 http ](http://einverne.github.io/post/2018/03/privoxy-forward-socks-to-http.html )
 
 ## 更新日志
+
+* 2019.7.23
+
+  * 分离出merge_ts_file.py，在windows中引入ffmpeg，并解决copy/b不能合并过多ts文件的问题（cmd中字符串长度限制在八千多一些）
+
+    （注意：合并ts视频的功能尚未在linux上测试）
+
+  * 引入下载某图片或ts视频前检测是否存在的机制，存在则不再下载
+  * 修改下载成功的条件，只有文件夹内存在title.ts且大小不为0，方写入SAVED.txt，避免合并失败却依旧写入SAVED.txt
 
 * 2019.7.22
 

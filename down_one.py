@@ -3,16 +3,7 @@ import os
 import html
 import requests
 import threading
-import functools
-
-
-def cmp(a,b):
-    na = re.search(r'(\d+).ts', a).group(1)
-    nb = re.search(r'(\d+).ts', b).group(1)
-    if int(na) > int(nb):
-        return 1
-    else:
-        return -1
+import merge_ts_file
 
 
 class Xvideos:
@@ -20,30 +11,28 @@ class Xvideos:
     def __init__(self, url=''):
         self.url = url
         self.video_num = -1
-        self.root_path = r'xvideos'    #默认根目录为本程序所在目录下的xvideos文件夹
+        #self.root_path = r'xvideos'    #默认根目录为本程序所在目录下的xvideos文件夹
+        self.root_path = r'E:\仓殷禀阜\xvideos'
         self.num_thread = 10           #默认线程
         self.timeout = 10              #超时时间设置
-        self.retry = 10                #最大重试次数
+        self.retry = 10                #请求网页失败的最大重试次数
         self.cover_num = -1
         self.count = 0
         self.html = ''
         self.title = ''
-        self.image_and_prevideo_success = True
         self.video_success = True
         self.wrong_ts_infor = ''
         self.wrong_pic_infor = ''
         self.pic_url_list = []
         self.ts_file_list = []
         self.final_fail_ts_file_list = []
-        self.final_fail_pic_list = []
-
 
     def right_url(self):
         if re.search(r'https?://www.xvideos.com/video\d+', self.url):
             return True
         else:
             print('url不正确')
-            
+           
     def should_pass(self, text_name):
         self.video_num = re.search(r'video(\d+)', self.url).group(1)
         if not os.path.exists(text_name):
@@ -88,11 +77,11 @@ class Xvideos:
         self.title = re.search(r'<h2 class="page-title">(.*?)<span class="duration">', self.html)
         if self.title:
             self.title = self.title.group(1).rstrip()
-            self.title = re.sub(r'[\\\*\?\|/:"<>\.]', '', self.title)
             self.title = html.unescape(self.title)    #转换html实体，如&hellip;转换为省略号
+            self.title = re.sub(r'[\/\\\*\?\|/:"<>\.]', '', self.title)    #有的html实体也会转化出非法路径字符，也要去掉
             print('名称：', self.title)
             self.dir_path = os.path.join(self.root_path, self.title)
-            if not os.path.exists(self.dir_path):                
+            if not os.path.exists(self.dir_path):
                 try:
                     os.makedirs(self.dir_path)
                 except OSError:    #linux路径过长会OSError: [Errno 36] File name too long:    #可参考https://stackoverflow.com/questions/34503540/why-does-python-give-oserror-errno-36-file-name-too-long-for-filename-short/34503913
@@ -117,29 +106,27 @@ class Xvideos:
     def thread_image(self, part_n):
         for i in range(4):
             pic_num = part_n*4+i
-            url = self.pic_url_list[pic_num]
-            img = self.repeat_request(url, fail_hint='"'+str(pic_num+1)+'.jpg fail and retry '+'%d"%retry_times', final_fail_hint=str(pic_num+1)+'.jpg final fail!')
-            if img:
-                if not os.path.exists(os.path.join(self.dir_path, '图片')):
-                    os.makedirs(os.path.join(self.dir_path, '图片'))
-                file_path = os.path.join(self.dir_path, '图片', str(pic_num)+'.jpg')
-                with open(file_path, 'wb') as fb:
-                    fb.write(img)
-
-                if pic_num+1 == self.cover_num:
-                    file_path = os.path.join(self.dir_path, '1.jpg')
-                    with open(file_path, 'wb') as fb:
-                        fb.write(img)
-                if pic_num == 30 or pic_num == 31:    #最后两张是大纲缩略图
-                    file_path = os.path.join(self.dir_path, str(pic_num-28)+'.jpg')
-                    with open(file_path, 'wb') as fb:
-                        fb.write(img)
+            if str(pic_num+1)+'.jpg' in os.listdir(os.path.join(self.dir_path, '图片')):
                 self.count += 1
                 print("\r图片进度：%.2f%%" % (self.count/32*100), end=' ')
             else:
-                self.final_fail_pic_list.append(pic_num)
-                self.wrong_pic_infor += "{'%s': '%s'}\n"%(url,self.dir_path)
-                self.image_and_prevideo_success = False
+                url = self.pic_url_list[pic_num]
+                img = self.repeat_request(url, fail_hint='"'+str(pic_num+1)+'.jpg fail and retry '+'%d"%retry_times', final_fail_hint=str(pic_num+1)+'.jpg final fail!')
+                if img:
+                    file_path = os.path.join(self.dir_path, '图片', str(pic_num+1)+'.jpg')
+                    with open(file_path, 'wb') as fb:
+                        fb.write(img)
+
+                    if pic_num+1 == self.cover_num:    #封面图片
+                        file_path = os.path.join(self.dir_path, '1.jpg')
+                        with open(file_path, 'wb') as fb:
+                            fb.write(img)
+                    if pic_num == 30 or pic_num == 31:    #最后两张是大纲缩略图
+                        file_path = os.path.join(self.dir_path, str(pic_num-28)+'.jpg')
+                        with open(file_path, 'wb') as fb:
+                            fb.write(img)
+                    self.count += 1
+                    print("\r图片进度：%.2f%%" % (self.count/32*100), end=' ')
 
 
     def download_image(self):
@@ -159,6 +146,8 @@ class Xvideos:
         
         thread_list = []
         self.count = 0
+        if not os.path.exists(os.path.join(self.dir_path, '图片')):
+            os.makedirs(os.path.join(self.dir_path, '图片'))
         for i in range(8):    #共32张图片，故开8线程，而不是沿用self.num_thread(因为担心不是整除32的，速度慢)
             t = threading.Thread(target=self.thread_image, kwargs={'part_n': i})
             t.setDaemon(True)    #设置守护进程
@@ -167,46 +156,43 @@ class Xvideos:
         for t in thread_list:
             t.join()    #阻塞主进程，进行完所有线程后再运行主进程
         print()
+
     
-    
-    def download_preview_video(self):    #下载预览视频     
-        re_str = r'/videos/thumbs169/(.*?)/mozaique'
-        key = re.search(re_str, self.html).group(1)
-        url = r'https://img-hw.xvideos-cdn.com/videos/videopreview/%s_169.mp4'%key    #以后下载预览视频失败时先检查对应的解析域名是否改变了
-        video_data = self.repeat_request(url, fail_hint='"preview_video fail and retry %d"%retry_times', final_fail_hint='preview_video final fail!')
-        if video_data:
-            file_path = os.path.join(self.dir_path, '预览.mp4')
-            with open(file_path, 'wb') as f:
-                f.write(video_data)
-                
+    def download_preview_video(self):    #下载预览视频 
+        if (not '预览.mp4' in os.listdir(self.dir_path) and
+            os.path.getsize(os.path.join(self.dir_path,'预览.mp4'))>0):
+            re_str = r'/videos/thumbs169/(.*?)/mozaique'
+            key = re.search(re_str, self.html).group(1)
+            url = r'https://img-hw.xvideos-cdn.com/videos/videopreview/%s_169.mp4'%key    #以后下载预览视频失败时先检查对应的解析域名是否改变了
+            video_data = self.repeat_request(url, fail_hint='"preview_video fail and retry %d"%retry_times', final_fail_hint='preview_video final fail!')
+            if video_data:
+                file_path = os.path.join(self.dir_path, '预览.mp4')
+                with open(file_path, 'wb') as f:
+                    f.write(video_data)
+
 
     def download_ts_file(self, ts_url):    
-        '''
-        re_str = r'(?:hls-\d{3,4}p(\d+.ts))|(?:hls-\d{3,4}p-[a-zA-Z0-9]{5}(\d+.ts))'
-        #目前见过两种，相对路径的前缀分别形如hls-720p3.ts， hls-360p-ba36e0.ts
-        re_result = re.search(re_str, ts_url)
-        if re_result.group(1):
-            ts_name = re_result.group(1)
-        elif re_result.group(2):
-            ts_name = re_result.group(2)    #这么多行代码全都是re的正向零宽断言必须定长的锅，不得不采用这种迂回的写法，难道就不能搞个语法糖吗
-        '''
         re_str = r'hls-\d{3,4}p(?:-[a-zA-Z0-9]{5})?(\d+.ts)'
+        #目前见过两种，相对路径的前缀分别形如hls-720p3.ts， hls-360p-ba36e0.ts
         ts_name = re.search(re_str, ts_url).group(1)
-        ts_file = self.repeat_request(ts_url, headers={'Connection': 'close'}, fail_hint='"'+ts_name +' fail and retry '+'%d"%retry_times', final_fail_hint=ts_name+' final failed! Add it into ERROR.txt')
-        if ts_file:
-            file_path = os.path.join(self.dir_path, ts_name)
-            with open(file_path, 'ab') as f:
-                f.write(ts_file)
-                f.flush()
+        if ts_name in os.listdir(self.dir_path):
             self.count += 1
-            print("\r视频进度：%.2f%%" % (self.count/self.ts_num*100), end=' ')
             self.ts_file_list.append(ts_name)
+            print("\r视频进度：%.2f%%" % (self.count/self.ts_num*100), end=' ')
         else:
-            with open('ERROR.txt', 'a+', encoding='utf-8') as f:
-                f.write("{'%s': '%s'}\n"%(ts_url, self.dir_path))
-            self.video_success = False
-            self.final_fail_ts_file_list.append(ts_name)
-            self.wrong_ts_infor += "{'%s': '%s'}\n"%(ts_url,self.dir_path)    #最后写入信息.txt
+            ts_file = self.repeat_request(ts_url, headers={'Connection': 'close'}, fail_hint='"'+ts_name +' fail and retry '+'%d"%retry_times', final_fail_hint=ts_name+' final failed! Add it into ERROR.txt')
+            if ts_file:
+                file_path = os.path.join(self.dir_path, ts_name)
+                with open(file_path, 'ab') as f:
+                    f.write(ts_file)
+                    f.flush()
+                self.count += 1
+                self.ts_file_list.append(ts_name)
+                print("\r视频进度：%.2f%%" % (self.count/self.ts_num*100), end=' ')
+            else:
+                with open('ERROR.txt', 'a+', encoding='utf-8') as f:
+                    f.write("{'%s': '%s'}\n"%(ts_url, self.dir_path))
+                self.video_success = False
 
 
     def thread_video(self, start, end, part):    
@@ -216,56 +202,6 @@ class Xvideos:
             except:
                 self.video_success = False
                 raise
-        
-        
-    def merge_ts_file(self):    
-        if os.name == 'nt':    #windows采用copy/b合并(但是合并出来的视频相较于linux的ffmpeg而言，又大又卡又模糊S)
-            
-            pan = re.search(r'^[a-zA-Z]:',self.dir_path)    
-            if pan:    #dir_path是绝对路径
-                dir_path2 = self.dir_path
-            else:    ##dir_path是相对路径
-                run_path = os.path.dirname(os.path.abspath('__file__'))
-                dir_path2 = os.path.join(run_path, self.dir_path)        #最终都获得绝对路径
-            
-            self.ts_file_list = sorted(self.ts_file_list,key=functools.cmp_to_key(cmp))
-            input_file = '+'.join(self.ts_file_list)
-            output_file = self.title+'.ts'
-            
-            cmd_str = ''
-            cmd_str += 'cd /d "%s" & ' % dir_path2
-            cmd_str += 'copy/b %s "%s" & ' % (input_file, output_file)
-            for i in self.ts_file_list:
-                cmd_str += 'del /Q %s $' % i
-            #print(cmd_str)
-                
-            os.system(cmd_str)
-            #print(os.popen(cmd_str).read())    #os.popen()除了可以实现os.system的功能外，还多了一个输出控制台内容的功能
-            '''
-            另外要注意，多条命令时不能调用多个os.system或os.popen命令
-            因为每条命令都是单独的一个进程
-            比如改变了路径后，但下一个os.system或os.popen又回到了最初的路径
-            可以将每条命令用&间隔开，然后一次执行
-            '''
-        elif os.name == 'posix':    #linux采用ffmpeg合并  #ffmpeg后面加上-loglevel quiet 不向控制台打印信息
-            pan = re.search(r'^/root',self.dir_path)
-            if pan:    #dir_path是绝对路径
-                dir_path2 = self.dir_path
-            else:    #dir_path是相对路径
-                run_path = os.path.dirname(os.path.abspath('__file__'))
-                dir_path2 = os.path.join(run_path, self.dir_path)        #最终都获得绝对路径
-            
-            self.ts_file_list = sorted(self.ts_file_list,key=functools.cmp_to_key(cmp))
-            input_file = '|'.join(self.ts_file_list)
-            output_file = self.title + '.mp4'
-            
-            command = ''
-            command += 'cd "%s" && '%dir_path2    #进入视频所在路径
-            command += 'ffmpeg -i "concat:%s" -loglevel quiet -acodec copy -vcodec copy -absf aac_adtstoasc "%s" && '%(input_file,output_file)    #使用ffmpeg将ts合并为mp4
-            command += 'rm -f *.ts  && '
-            command += 'mv "%s.mp4" "%s.ts"' % (self.title, self.title)
-            #指行命令
-            os.system(command)
             
 
     def download_video(self):    #结构为：获取ts链接，多线程爬取，合并
@@ -317,9 +253,11 @@ class Xvideos:
                 for t in thread_list:
                     t.join()    #阻塞主进程，进行完所有线程后再运行主进程
                 
-                if self.video_success:    
-                    self.merge_ts_file()
-                    print('\n%s 下载完成\n' % self.title)
+                if self.video_success:
+                    merge_ts_file.merge(self.ts_file_list, self.dir_path, self.title+'.ts')
+                if (self.title+'.ts' in os.listdir(self.dir_path) and 
+                    os.path.getsize(os.path.join(self.dir_path,self.title+'.ts'))>0):    #只有合并了才算成功
+                    print('\n%s 合并成功\n' % self.title)    #视频下载完成就算任务完成，图片和预览视频允许失败
                     with open('SAVED.txt','a+', encoding='utf-8') as f:
                         f.write(str(self.video_num)+'\n')
                 else:
@@ -329,22 +267,12 @@ class Xvideos:
                             print(i,end=' ')
                         print('final fail! NO merge ts_file!')
                         print(self.title+' 失败结束')
-                    
-                  
+
+
     def write(self):
-        file_path = os.path.join(self.dir_path, '信息.txt')
+        file_path = os.path.join(self.dir_path, 'information.txt')
         with open(file_path, 'w', encoding='utf-8') as f:
             f.write('标题：\n%s\n网址：\n%s\n'%(self.title, self.url))
-            
-        
-            if self.final_fail_pic_list:
-                for i in self.final_fail_pic_list:
-                    f.write(i,'.jpg ')
-                f.write('\n\nfinal fail!\n\n%s'%self.wrong_pic_infor)
-            if self.final_fail_ts_file_list:
-                for i in self.final_fail_ts_file_list:
-                    f.write(i+' ')
-                f.write('\n\nfinal fail! NO merge ts_file!\n\n%s'%self.wrong_ts_infor)
 
 
     def download(self):
@@ -359,7 +287,6 @@ class Xvideos:
                     self.download_video()
                     self.write()
                     return True
-    
 
 
 if __name__ == '__main__':
