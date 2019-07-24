@@ -1,5 +1,6 @@
 import re
 import os
+import time
 import html
 import requests
 import threading
@@ -159,8 +160,7 @@ class Xvideos:
 
     
     def download_preview_video(self):    #下载预览视频 
-        if (not '预览.mp4' in os.listdir(self.dir_path) and
-            os.path.getsize(os.path.join(self.dir_path,'预览.mp4'))>0):
+        if not '预览.mp4' in os.listdir(self.dir_path):
             re_str = r'/videos/thumbs169/(.*?)/mozaique'
             key = re.search(re_str, self.html).group(1)
             url = r'https://img-hw.xvideos-cdn.com/videos/videopreview/%s_169.mp4'%key    #以后下载预览视频失败时先检查对应的解析域名是否改变了
@@ -291,5 +291,8 @@ class Xvideos:
 
 if __name__ == '__main__':
     url = input('请输入网址：\n')
+    start = time.perf_counter()
     xvideos = Xvideos(url)
     xvideos.download()
+    end = time.perf_counter()
+    print('任务执行共%d小时%d分%.2f秒' % ((end-start)//3600,(end-start)%3600//60,(end-start)%60)) 

@@ -78,13 +78,15 @@ def tag_videos_pages():    #视频标签
                     break
     if not tag_name:
         tag_name = input('请指定标签名称：')
-
-    with open('TAG NAME.txt','r',encoding='utf-8') as f:
-        exists = False
-        for line in f:
-            if url in line:
-                exists = True    
-    if exists == False:   
+        
+    exists = False
+    if os.path.exists('TAG NAME.txt'):
+        with open('TAG NAME.txt','r',encoding='utf-8') as f:
+            exists = False
+            for line in f:
+                if url in line:
+                    exists = True    
+    if not exists:   
         with open('TAG NAME.txt','a+',encoding='utf-8') as f:
             f.write(url+' '+tag_name+'\n')
             
