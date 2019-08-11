@@ -10,9 +10,9 @@ def download_videos_of_one_page(url='', page_type='01-单页下载'):    #page_t
         dir_name = input('请输入文件夹名称（最终文件存放于root_path/01-单页下载/自定义文件夹名）:')
     xvideos = down_one.Xvideos()
     if traceback.extract_stack()[-2][2] == 'choice':
-        xvideos.root_path = os.path.join(xvideos.root_path, page_type, dir_name)
+        root_path = os.path.join(xvideos.root_path, page_type, dir_name)
     else:
-        xvideos.root_path = os.path.join(xvideos.root_path, page_type)
+        root_path = os.path.join(xvideos.root_path, page_type)
     html = xvideos.repeat_request(url, final_fail_hint='request %s final fail'%url)
     if html:
         soup = BeautifulSoup(html, 'lxml')
@@ -21,8 +21,10 @@ def download_videos_of_one_page(url='', page_type='01-单页下载'):    #page_t
         for i, url in enumerate(urls_list):
             print('当前页进度： %d/%d'%(i+1, len(urls_list)))
             print('网址： %s'%url)
-            xvideos.url = url
+            xvideos = down_one.Xvideos(url)
+            xvideos.root_path = root_path
             xvideos.download()
+            xvideos.ts_file_list = []
             print()
 
 
@@ -52,7 +54,7 @@ def best_videos_pages():    #最佳影片
         download_videos_of_one_page(url, os.path.join('03-最佳影片', data))    #视频文件夹保存在root_path/02-最佳影片/年月
 
 
-def tag_videos_pages():    #视频标签
+def tag_videos_pages():    #视频标签0
     '''
     标签的url的页数get传值有好几种（并不通用）:
     一种是关键字搜索类型的（本质上就是搜索了标签中的字），如https://www.xvideos.com/?k=3d&p=2

@@ -82,6 +82,9 @@ class Xvideos:
             self.title = re.sub(r'[\/\\\*\?\|/:"<>\.]', '', self.title)    #有的html实体也会转化出非法路径字符，也要去掉
             print('名称：', self.title)
             self.dir_path = os.path.join(self.root_path, self.title)
+            if self.dir_path[-1] == ' ':    #window创建文件夹时，文件夹名以空格结尾的会自动删掉空格
+                self.dir_path = self.dir_path[:-1]
+            print(self.dir_path)
             if not os.path.exists(self.dir_path):
                 try:
                     os.makedirs(self.dir_path)
@@ -92,6 +95,13 @@ class Xvideos:
                             dir_path_len -= 1
                             self.dir_path = self.dir_path[:dir_path_len]
                             os.makedirs(self.dir_path)
+                            print(1)
+                            os.rmdir(self.dir_path)    #删除空文件夹
+                            self.dir_path = self.dir_path[:-7]
+                            print(self.dir_path)
+                            if self.dir_path[-1] == ' ':    
+                                self.dir_path = self.dir_path[:-1]
+                            os.makedirs(self.dir_path)   #待会还要与‘图片’文件夹拼接
                             print(self.dir_path)
                             break
                         except:
@@ -254,14 +264,17 @@ class Xvideos:
                     t.join()    #阻塞主进程，进行完所有线程后再运行主进程
                 
                 if self.video_success:
-                    merge_ts_file.merge(self.ts_file_list, self.dir_path, self.title+'.ts')
-                if (self.title+'.ts' in os.listdir(self.dir_path) and 
-                    os.path.getsize(os.path.join(self.dir_path,self.title+'.ts'))>0):    #只有合并了才算成功
+                    merge_ts_file.merge(self.ts_file_list, self.dir_path, self.title+'.mp4')
+                if ( (self.title+'.mp4' in os.listdir(self.dir_path) and 
+                  os.path.getsize(os.path.join(self.dir_path,self.title+'.mp4'))>0 ) or#只有合并了才算成功(存在'title'.ts或是av.mp4且大小不为0)
+                  ('av.mp4' in os.listdir(self.dir_path) and    #av.mp4是路径过长而无法改名导致的
+                  os.path.getsize(os.path.join(self.dir_path,'av.mp4'))>0 ) ):        
                     print('\n%s 合并成功\n' % self.title)    #视频下载完成就算任务完成，图片和预览视频允许失败
                     with open('SAVED.txt','a+', encoding='utf-8') as f:
                         f.write(str(self.video_num)+'\n')
                 else:
-                    print()
+                    with open('merge fail.txt', 'w', encoding='utf-8') as f:
+                        f.write(self.video_num+'\n')
                     if self.final_fail_ts_file_list:
                         for i in self.final_fail_ts_file_list:
                             print(i,end=' ')

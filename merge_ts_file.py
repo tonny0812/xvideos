@@ -35,20 +35,41 @@ def merge_less_100(ts_file_list, dir_path, name):
     
     if os.name == 'nt':
         command = ''
+        #command = 'chcp 65001 & '    #cmd编码设为utf-8
         command += 'cd /d "%s" & ' % dir_path2
         if win_merge == 1:    #copy/b
             command += 'copy/b %s "%s" & ' % (input_file, output_file)
         elif win_merge == 2:    #ffmpeg
-            command += '%s -i "concat:%s" -y -loglevel quiet -acodec copy -vcodec copy -crf 0 "%s" & '%(ffmpeg_path,input_file,output_file)    #使用ffmpeg将ts合并为mp4
-        for i in ts_file_list:
-            command += 'del /Q %s $ ' % i
+            if not re.match(r'new\d+?.ts',output_file):    #ts视频数大于100的第二轮合并或是ts视频数小于100的合并（output_file名为最终文件名的都要经过中间名称，output_file为new\d的不用）
+                command += '%s -i "concat:%s" -y -acodec copy -vcodec copy -crf 0 "%s" & '%(ffmpeg_path,input_file,'av.mp4')    #使用ffmpeg将ts合并为mp4    #使用替身名称，否则ffmpeg遇utf-8字符不工作
+            else:    #ts视频数大于100的第一轮合并
+                command += '%s -i "concat:%s" -y -acodec copy -vcodec copy -crf 0 "%s" & '%(ffmpeg_path,input_file,output_file)
+        os.popen(command).read()
+        if ( (name in os.listdir(dir_path) and 
+              os.path.getsize(os.path.join(dir_path,name))>0 ) or 
+             ('av.mp4' in os.listdir(dir_path) and    #av.mp4是路径过长而无法改名导致的
+              os.path.getsize(os.path.join(dir_path,'av.mp4'))>0) ):    #合并成功再删除ts文件
+            command = ''
+            command += 'cd /d "%s" & ' % dir_path2
+            for i in ts_file_list:
+                command += 'del /Q %s $ ' % i
+            os.popen(command).read()
+            #with open('4.txt','a+',encoding='utf-8')as f:
+            #    f.write(command+'\n\n\n')
+        if win_merge ==2 and not re.match(r'new\d+?.ts',output_file):
+            command = ''
+            command += 'cd /d "%s" & ' % dir_path2
+            command += 'ren "%s" "%s"' % ('av.mp4', output_file)    #再把名字换回去    #av后要有文件格式的后缀，否则ffmpeg报错
+            os.popen(command).read()
+        
     elif os.name == 'posix':    #linux采用ffmpeg合并  #ffmpeg后面加上-logevel quiet 不向控制台打印信息  #-crf 0为无损  #-y遇到同名文件则覆盖
         command = ''
         command += 'cd "%s" && '%dir_path2    #进入视频所在路径
         command += 'ffmpeg -i "concat:%s" -y -loglevel quiet -acodec copy -vcodec copy -crf 0 "%s" && '%(input_file,output_file)    #使用ffmpeg将ts合并为mp4
         for i in ts_file_list:
             command += 'rm -rf %s && '%i
-    os.popen(command).read()    #os.pepen不会弹出cmd的黑框    #使用read()巧妙地阻塞os.popen
+        
+    #os.popen(command).read()    #os.pepen不会弹出cmd的黑框    #使用read()巧妙地阻塞os.popen
     '''
     1、多条命令时不能调用多个os.system或os.popen命令
        因为每条命令都是单独的一个进程
@@ -69,7 +90,7 @@ def merge(ts_file_list, dir_path, name):
             new_ts_file_list = []
             for file in os.listdir(dir_path):
                 if re.match(r'new\d+?.ts', file):
-                    new_ts_file_list.append(file)  
+                    new_ts_file_list.append(file)
             merge_less_100(new_ts_file_list, dir_path, name)
     elif os.name == 'posix':
         merge_less_100(ts_file_list, dir_path, name)    #未测试

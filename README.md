@@ -66,6 +66,8 @@ windows：[ffmepg](<https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-201907
 
   **get_favorite_urls.py** 手动从浏览器中导出收藏夹后，使用本程序可提取出其中的xvideos的url
 
+  **get_saved.py** 获取指定目录下，已经下载过的视频，并存入SAVED.txt，适用于删除了某些视频时更新SAVED.txt
+
 * #### 其他文件
 
   **xvideos_urls.txt** down_some.py从此文本中读入要爬取的视频网址
@@ -177,6 +179,16 @@ windows：[ffmepg](<https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-201907
 
 ## 更新日志
 
+* 2019.8.10
+
+  windows下创建文件夹时，文件夹名称最后一个字符是空格时，系统会删除此空格作为名称。解决了一个源此的bug
+
+* 2019.8.8
+
+  由于类的初始化不正确导致**down_group.py** 下载一个页面的所有视频时，下载到的图片都是同一组。已修复。
+
+  同时增添**get_saved.py** 
+
 * 2019.7.23
 
   * 分离出merge_ts_file.py，在windows中引入ffmpeg，并解决copy/b不能合并过多ts文件的问题（cmd中字符串长度限制在八千多一些）
@@ -205,3 +217,4 @@ windows：[ffmepg](<https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-201907
 * 2019.7.16 
 
   * 晚 开始琢磨写这个爬虫
+

@@ -5,7 +5,8 @@ import time, os
 
 @log_exception
 def downloads():
-    dir_name = input('请输入文件夹名称（最终文件存放于root_path/00-来自文本/自定义文件夹名）:')
+    #dir_name = input('请输入文件夹名称（最终文件存放于root_path/00-来自文本/自定义文件夹名）:')
+    dir_name = '20190802'
     urls_txt = 'xvideos_urls.txt'
     with open(urls_txt,'r',encoding='utf-8') as f:
         urls_list=f.readlines()
@@ -21,4 +22,4 @@ if __name__ == '__main__':
     start = time.perf_counter()
     downloads()
     end = time.perf_counter()
-    print('任务执行共%d小时%d分%.2f秒' % ((end-start)//3600,(end-start)%3600//60,(end-start)%60)) 
+    print('任务执行共%d小时%d分%.2f秒' % ((end-start)//3600,(end-start)%3600//60,(end-start)%60))

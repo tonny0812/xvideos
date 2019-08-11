@@ -1,0 +1,395 @@
+
+[2019-07-24 08:13:29,355-xvideos_log-ERROR]:
+[Error in exception_handling] msg: invalid literal for int() with base 10: 'exit'
+Traceback (most recent call last):
+  File "D:\计算机\Project\xvideos\exception_handling.py", line 23, in wrapper
+    fn(*args, **kwargs)
+  File "D:/计算机/Project/xvideos/down_group.py", line 123, in choice
+    search_videos_pages()
+  File "D:/计算机/Project/xvideos/down_group.py", line 33, in search_videos_pages
+    for page in range(int(n)):
+ValueError: invalid literal for int() with base 10: 'exit'
+
+[2019-07-24 09:24:33,350-xvideos_log-ERROR]:
+[Error in exception_handling] msg: [Errno 2] No such file or directory: 'TAG NAME.txt'
+Traceback (most recent call last):
+  File "D:\计算机\Project\xvideos\exception_handling.py", line 23, in wrapper
+    fn(*args, **kwargs)
+  File "D:/计算机/Project/xvideos/down_group.py", line 127, in choice
+    tag_videos_pages()
+  File "D:/计算机/Project/xvideos/down_group.py", line 82, in tag_videos_pages
+    with open('TAG NAME.txt','r',encoding='utf-8') as f:
+FileNotFoundError: [Errno 2] No such file or directory: 'TAG NAME.txt'
+
+[2019-07-25 18:37:27,067-xvideos_log-ERROR]:
+[Error in exception_handling] msg: [WinError 206] 文件名或扩展名太长。: 'E:\\仓殷禀阜\\xvideos\\03-最佳影片\\2019-02\\22 FAT LOADS CUMSHOT COMPILATION - Featuring Kimber Veils, Rosalyn Sphinx, Penny Pax, Karlie Montana, Dani Daniels, Abella Danger, Alexa Grace, August Ames, Stella Cox, Holly Mack, Phoenix Marie, Vandal Vyxen, Janic\\图片'
+Traceback (most recent call last):
+  File "D:\计算机\Project\xvideos\exception_handling.py", line 23, in wrapper
+    fn(*args, **kwargs)
+  File "D:/计算机/Project/xvideos/down_group.py", line 127, in choice
+    best_videos_pages()
+  File "D:/计算机/Project/xvideos/down_group.py", line 52, in best_videos_pages
+    download_videos_of_one_page(url, os.path.join('03-最佳影片', data))    #视频文件夹保存在root_path/02-最佳影片/年月
+  File "D:/计算机/Project/xvideos/down_group.py", line 25, in download_videos_of_one_page
+    xvideos.download()
+  File "D:\计算机\Project\xvideos\down_one.py", line 285, in download
+    self.download_image()
+  File "D:\计算机\Project\xvideos\down_one.py", line 151, in download_image
+    os.makedirs(os.path.join(self.dir_path, '图片'))
+  File "C:\CS\Anaconda3\lib\os.py", line 221, in makedirs
+    mkdir(name, mode)
+FileNotFoundError: [WinError 206] 文件名或扩展名太长。: 'E:\\仓殷禀阜\\xvideos\\03-最佳影片\\2019-02\\22 FAT LOADS CUMSHOT COMPILATION - Featuring Kimber Veils, Rosalyn Sphinx, Penny Pax, Karlie Montana, Dani Daniels, Abella Danger, Alexa Grace, August Ames, Stella Cox, Holly Mack, Phoenix Marie, Vandal Vyxen, Janic\\图片'
+
+[2019-07-26 09:01:59,659-xvideos_log-ERROR]:
+[Error in exception_handling] msg: invalid literal for int() with base 10: 'exit'
+Traceback (most recent call last):
+  File "D:\计算机\Project\xvideos\exception_handling.py", line 23, in wrapper
+    fn(*args, **kwargs)
+  File "D:/计算机/Project/xvideos/down_group.py", line 127, in choice
+    best_videos_pages()
+  File "D:/计算机/Project/xvideos/down_group.py", line 46, in best_videos_pages
+    for page in range(int(n)):
+ValueError: invalid literal for int() with base 10: 'exit'
+
+[2019-08-02 14:44:17,410-xvideos_log-ERROR]:
+[Error in exception_handling] msg: 'gbk' codec can't encode character '\uad00' in position 41: illegal multibyte sequence
+Traceback (most recent call last):
+  File "D:\计算机\Project\xvideos\exception_handling.py", line 23, in wrapper
+    fn(*args, **kwargs)
+  File "D:/计算机/Project/xvideos/down_some.py", line 17, in downloads
+    xvideos.download()
+  File "D:\计算机\Project\xvideos\down_one.py", line 290, in download
+    self.download_video()
+  File "D:\计算机\Project\xvideos\down_one.py", line 260, in download_video
+    merge_ts_file.merge(self.ts_file_list, self.dir_path, self.title+'.ts')
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 70, in merge
+    merge_less_100(ts_file_list[i*100:i*100+100], dir_path, 'new%d.ts'%i)
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 46, in merge_less_100
+    f.write(command)
+UnicodeEncodeError: 'gbk' codec can't encode character '\uad00' in position 41: illegal multibyte sequence
+
+[2019-08-02 14:44:35,836-xvideos_log-ERROR]:
+[Error in exception_handling] msg: 'gbk' codec can't encode character '\uad00' in position 41: illegal multibyte sequence
+Traceback (most recent call last):
+  File "D:\计算机\Project\xvideos\exception_handling.py", line 23, in wrapper
+    fn(*args, **kwargs)
+  File "D:/计算机/Project/xvideos/down_some.py", line 17, in downloads
+    xvideos.download()
+  File "D:\计算机\Project\xvideos\down_one.py", line 290, in download
+    self.download_video()
+  File "D:\计算机\Project\xvideos\down_one.py", line 260, in download_video
+    merge_ts_file.merge(self.ts_file_list, self.dir_path, self.title+'.ts')
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 70, in merge
+    merge_less_100(ts_file_list[i*100:i*100+100], dir_path, 'new%d.ts'%i)
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 46, in merge_less_100
+    f.write(command)
+UnicodeEncodeError: 'gbk' codec can't encode character '\uad00' in position 41: illegal multibyte sequence
+
+[2019-08-02 14:45:25,324-xvideos_log-ERROR]:
+[Error in exception_handling] msg: 'encodoing' is an invalid keyword argument for open()
+Traceback (most recent call last):
+  File "D:\计算机\Project\xvideos\exception_handling.py", line 23, in wrapper
+    fn(*args, **kwargs)
+  File "D:/计算机/Project/xvideos/down_some.py", line 17, in downloads
+    xvideos.download()
+  File "D:\计算机\Project\xvideos\down_one.py", line 290, in download
+    self.download_video()
+  File "D:\计算机\Project\xvideos\down_one.py", line 260, in download_video
+    merge_ts_file.merge(self.ts_file_list, self.dir_path, self.title+'.ts')
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 70, in merge
+    merge_less_100(ts_file_list[i*100:i*100+100], dir_path, 'new%d.ts'%i)
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 45, in merge_less_100
+    with open('1.txt','w',encodoing='utf-8') as f:
+TypeError: 'encodoing' is an invalid keyword argument for open()
+
+[2019-08-02 15:10:49,004-xvideos_log-ERROR]:
+[Error in exception_handling] msg: name 'utf' is not defined
+Traceback (most recent call last):
+  File "D:\计算机\Project\xvideos\exception_handling.py", line 23, in wrapper
+    fn(*args, **kwargs)
+  File "D:/计算机/Project/xvideos/down_some.py", line 17, in downloads
+    xvideos.download()
+  File "D:\计算机\Project\xvideos\down_one.py", line 290, in download
+    self.download_video()
+  File "D:\计算机\Project\xvideos\down_one.py", line 260, in download_video
+    merge_ts_file.merge(self.ts_file_list, self.dir_path, self.title+'.ts')
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 73, in merge
+    merge_less_100(ts_file_list[i*100:i*100+100], dir_path, 'new%d.ts'%i)
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 42, in merge_less_100
+    command += '%s -i "concat:%s" -y -loglevel quiet -acodec copy -vcodec copy -crf 0 "%s" & '%(ffmpeg_path,input_file,output_file.encode(utf-8))    #使用ffmpeg将ts合并为mp4
+NameError: name 'utf' is not defined
+
+[2019-08-02 15:11:31,854-xvideos_log-ERROR]:
+[Error in exception_handling] msg: name 'outputfile' is not defined
+Traceback (most recent call last):
+  File "D:\计算机\Project\xvideos\exception_handling.py", line 23, in wrapper
+    fn(*args, **kwargs)
+  File "D:/计算机/Project/xvideos/down_some.py", line 17, in downloads
+    xvideos.download()
+  File "D:\计算机\Project\xvideos\down_one.py", line 290, in download
+    self.download_video()
+  File "D:\计算机\Project\xvideos\down_one.py", line 260, in download_video
+    merge_ts_file.merge(self.ts_file_list, self.dir_path, self.title+'.ts')
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 73, in merge
+    merge_less_100(ts_file_list[i*100:i*100+100], dir_path, 'new%d.ts'%i)
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 45, in merge_less_100
+    command += '& ren "%s" "%s"' % (outputfile.encode('utf-8'), output_file)
+NameError: name 'outputfile' is not defined
+
+[2019-08-02 15:38:53,485-xvideos_log-ERROR]:
+[Error in exception_handling] msg: unknown encoding: unicode
+Traceback (most recent call last):
+  File "D:\计算机\Project\xvideos\exception_handling.py", line 23, in wrapper
+    fn(*args, **kwargs)
+  File "D:/计算机/Project/xvideos/down_some.py", line 17, in downloads
+    xvideos.download()
+  File "D:\计算机\Project\xvideos\down_one.py", line 290, in download
+    self.download_video()
+  File "D:\计算机\Project\xvideos\down_one.py", line 260, in download_video
+    merge_ts_file.merge(self.ts_file_list, self.dir_path, self.title+'.ts')
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 74, in merge
+    merge_less_100(ts_file_list[i*100:i*100+100], dir_path, 'new%d.ts'%i)
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 46, in merge_less_100
+    command = command.encode('unicode')
+LookupError: unknown encoding: unicode
+
+[2019-08-02 15:49:50,398-xvideos_log-ERROR]:
+[Error in exception_handling] msg: 'str' object has no attribute 'base64'
+Traceback (most recent call last):
+  File "D:\计算机\Project\xvideos\exception_handling.py", line 23, in wrapper
+    fn(*args, **kwargs)
+  File "D:/计算机/Project/xvideos/down_some.py", line 17, in downloads
+    xvideos.download()
+  File "D:\计算机\Project\xvideos\down_one.py", line 290, in download
+    self.download_video()
+  File "D:\计算机\Project\xvideos\down_one.py", line 260, in download_video
+    merge_ts_file.merge(self.ts_file_list, self.dir_path, self.title+'.ts')
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 75, in merge
+    merge_less_100(ts_file_list[i*100:i*100+100], dir_path, 'new%d.ts'%i)
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 44, in merge_less_100
+    command += '%s -i "concat:%s" -y -loglevel quiet -acodec copy -vcodec copy -crf 0 "%s" & '%(ffmpeg_path,input_file,output_file.base64.b64encode())    #使用ffmpeg将ts合并为mp4
+AttributeError: 'str' object has no attribute 'base64'
+
+[2019-08-02 15:52:19,276-xvideos_log-ERROR]:
+[Error in exception_handling] msg: 'str' object has no attribute 'base64'
+Traceback (most recent call last):
+  File "D:\计算机\Project\xvideos\exception_handling.py", line 23, in wrapper
+    fn(*args, **kwargs)
+  File "D:/计算机/Project/xvideos/down_some.py", line 17, in downloads
+    xvideos.download()
+  File "D:\计算机\Project\xvideos\down_one.py", line 290, in download
+    self.download_video()
+  File "D:\计算机\Project\xvideos\down_one.py", line 260, in download_video
+    merge_ts_file.merge(self.ts_file_list, self.dir_path, self.title+'.ts')
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 75, in merge
+    merge_less_100(ts_file_list[i*100:i*100+100], dir_path, 'new%d.ts'%i)
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 44, in merge_less_100
+    command += '%s -i "concat:%s" -y -loglevel quiet -acodec copy -vcodec copy -crf 0 "%s" & '%(ffmpeg_path,input_file,output_file.base64.b64encode())    #使用ffmpeg将ts合并为mp4
+AttributeError: 'str' object has no attribute 'base64'
+
+[2019-08-02 15:53:20,056-xvideos_log-ERROR]:
+[Error in exception_handling] msg: a bytes-like object is required, not 'str'
+Traceback (most recent call last):
+  File "D:\计算机\Project\xvideos\exception_handling.py", line 23, in wrapper
+    fn(*args, **kwargs)
+  File "D:/计算机/Project/xvideos/down_some.py", line 17, in downloads
+    xvideos.download()
+  File "D:\计算机\Project\xvideos\down_one.py", line 290, in download
+    self.download_video()
+  File "D:\计算机\Project\xvideos\down_one.py", line 260, in download_video
+    merge_ts_file.merge(self.ts_file_list, self.dir_path, self.title+'.ts')
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 75, in merge
+    merge_less_100(ts_file_list[i*100:i*100+100], dir_path, 'new%d.ts'%i)
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 44, in merge_less_100
+    command += '%s -i "concat:%s" -y -loglevel quiet -acodec copy -vcodec copy -crf 0 "%s" & '%(ffmpeg_path,input_file,base64.b64encode(output_file))    #使用ffmpeg将ts合并为mp4
+  File "C:\CS\Anaconda3\lib\base64.py", line 58, in b64encode
+    encoded = binascii.b2a_base64(s, newline=False)
+TypeError: a bytes-like object is required, not 'str'
+
+[2019-08-02 16:13:36,379-xvideos_log-ERROR]:
+[Error in exception_handling] msg: a bytes-like object is required, not 'str'
+Traceback (most recent call last):
+  File "D:\计算机\Project\xvideos\exception_handling.py", line 23, in wrapper
+    fn(*args, **kwargs)
+  File "D:/计算机/Project/xvideos/down_some.py", line 18, in downloads
+    xvideos.download()
+  File "D:\计算机\Project\xvideos\down_one.py", line 290, in download
+    self.download_video()
+  File "D:\计算机\Project\xvideos\down_one.py", line 260, in download_video
+    merge_ts_file.merge(self.ts_file_list, self.dir_path, self.title+'.ts')
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 75, in merge
+    merge_less_100(ts_file_list[i*100:i*100+100], dir_path, 'new%d.ts'%i)
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 44, in merge_less_100
+    command += '%s -i "concat:%s" -y -loglevel quiet -acodec copy -vcodec copy -crf 0 "%s" & '%(ffmpeg_path,input_file,output_file.encode('utf-8').replace('\\','%'))    #使用ffmpeg将ts合并为mp4
+TypeError: a bytes-like object is required, not 'str'
+
+[2019-08-02 18:18:06,629-xvideos_log-ERROR]:
+[Error in exception_handling] msg: list index out of range
+Traceback (most recent call last):
+  File "D:\计算机\Project\xvideos\exception_handling.py", line 23, in wrapper
+    fn(*args, **kwargs)
+  File "D:/计算机/Project/xvideos/down_group.py", line 127, in choice
+    best_videos_pages()
+  File "D:/计算机/Project/xvideos/down_group.py", line 52, in best_videos_pages
+    download_videos_of_one_page(url, os.path.join('03-最佳影片', data))    #视频文件夹保存在root_path/02-最佳影片/年月
+  File "D:/计算机/Project/xvideos/down_group.py", line 25, in download_videos_of_one_page
+    xvideos.download()
+  File "D:\计算机\Project\xvideos\down_one.py", line 292, in download
+    self.download_video()
+  File "D:\计算机\Project\xvideos\down_one.py", line 260, in download_video
+    merge_ts_file.merge(self.ts_file_list, self.dir_path, self.title+'.ts')
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 83, in merge
+    merge_less_100(new_ts_file_list, dir_path, name)
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 44, in merge_less_100
+    if 'new' in ts_file_list[0]:    #ts视频数大于100的第二轮合并
+IndexError: list index out of range
+
+[2019-08-02 18:25:35,771-xvideos_log-ERROR]:
+[Error in exception_handling] msg: list index out of range
+Traceback (most recent call last):
+  File "D:\计算机\Project\xvideos\exception_handling.py", line 23, in wrapper
+    fn(*args, **kwargs)
+  File "D:/计算机/Project/xvideos/down_group.py", line 127, in choice
+    best_videos_pages()
+  File "D:/计算机/Project/xvideos/down_group.py", line 52, in best_videos_pages
+    download_videos_of_one_page(url, os.path.join('03-最佳影片', data))    #视频文件夹保存在root_path/02-最佳影片/年月
+  File "D:/计算机/Project/xvideos/down_group.py", line 25, in download_videos_of_one_page
+    xvideos.download()
+  File "D:\计算机\Project\xvideos\down_one.py", line 292, in download
+    self.download_video()
+  File "D:\计算机\Project\xvideos\down_one.py", line 260, in download_video
+    merge_ts_file.merge(self.ts_file_list, self.dir_path, self.title+'.ts')
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 83, in merge
+    merge_less_100(new_ts_file_list, dir_path, name)
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 50, in merge_less_100
+    if win_merge ==2 and 'new' in ts_file_list[0]:
+IndexError: list index out of range
+
+[2019-08-05 14:05:52,060-xvideos_log-ERROR]:
+[Error in exception_handling] msg: invalid literal for int() with base 10: 'exit'
+Traceback (most recent call last):
+  File "D:\计算机\Project\xvideos\exception_handling.py", line 23, in wrapper
+    fn(*args, **kwargs)
+  File "D:/计算机/Project/xvideos/down_group.py", line 127, in choice
+    best_videos_pages()
+  File "D:/计算机/Project/xvideos/down_group.py", line 46, in best_videos_pages
+    for page in range(int(n)):
+ValueError: invalid literal for int() with base 10: 'exit'
+
+[2019-08-05 14:18:25,706-xvideos_log-ERROR]:
+[Error in exception_handling] msg: invalid literal for int() with base 10: ''
+Traceback (most recent call last):
+  File "D:\计算机\Project\xvideos\exception_handling.py", line 23, in wrapper
+    fn(*args, **kwargs)
+  File "D:/计算机/Project/xvideos/down_group.py", line 127, in choice
+    best_videos_pages()
+  File "D:/计算机/Project/xvideos/down_group.py", line 46, in best_videos_pages
+    for page in range(int(n)):
+ValueError: invalid literal for int() with base 10: ''
+
+[2019-08-05 15:06:31,762-xvideos_log-ERROR]:
+[Error in exception_handling] msg: 'gbk' codec can't encode character '\uac00' in position 39: illegal multibyte sequence
+Traceback (most recent call last):
+  File "D:\计算机\Project\xvideos\exception_handling.py", line 23, in wrapper
+    fn(*args, **kwargs)
+  File "D:/计算机/Project/xvideos/down_group.py", line 127, in choice
+    best_videos_pages()
+  File "D:/计算机/Project/xvideos/down_group.py", line 52, in best_videos_pages
+    download_videos_of_one_page(url, os.path.join('03-最佳影片', data))    #视频文件夹保存在root_path/02-最佳影片/年月
+  File "D:/计算机/Project/xvideos/down_group.py", line 25, in download_videos_of_one_page
+    xvideos.download()
+  File "D:\计算机\Project\xvideos\down_one.py", line 293, in download
+    self.download_video()
+  File "D:\计算机\Project\xvideos\down_one.py", line 260, in download_video
+    merge_ts_file.merge(self.ts_file_list, self.dir_path, self.title+'.mp4')
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 89, in merge
+    merge_less_100(ts_file_list[i*100:i*100+100], dir_path, 'new%d.ts'%i)
+  File "D:\计算机\Project\xvideos\merge_ts_file.py", line 58, in merge_less_100
+    f.write(command+'\n\n\n')
+UnicodeEncodeError: 'gbk' codec can't encode character '\uac00' in position 39: illegal multibyte sequence
+
+[2019-08-07 20:03:05,413-xvideos_log-ERROR]:
+[Error in exception_handling] msg: 'NoneType' object has no attribute 'group'
+Traceback (most recent call last):
+  File "D:\计算机\Project\xvideos\exception_handling.py", line 23, in wrapper
+    fn(*args, **kwargs)
+  File "D:/计算机/Project/xvideos/down_group.py", line 128, in choice
+    best_videos_pages()
+  File "D:/计算机/Project/xvideos/down_group.py", line 53, in best_videos_pages
+    download_videos_of_one_page(url, os.path.join('03-最佳影片', data))    #视频文件夹保存在root_path/02-最佳影片/年月
+  File "D:/计算机/Project/xvideos/down_group.py", line 25, in download_videos_of_one_page
+    xvideos.download()
+  File "D:\计算机\Project\xvideos\down_one.py", line 291, in download
+    self.download_image()
+  File "D:\计算机\Project\xvideos\down_one.py", line 141, in download_image
+    pic_base_url = content.group(1)
+AttributeError: 'NoneType' object has no attribute 'group'
+
+[2019-08-08 11:33:18,501-xvideos_log-ERROR]:
+[Error in exception_handling] msg: invalid literal for int() with base 10: 'exit'
+Traceback (most recent call last):
+  File "D:\计算机\Project\xvideos\exception_handling.py", line 23, in wrapper
+    fn(*args, **kwargs)
+  File "D:/计算机/Project/xvideos/down_group.py", line 128, in choice
+    best_videos_pages()
+  File "D:/计算机/Project/xvideos/down_group.py", line 47, in best_videos_pages
+    for page in range(int(n)):
+ValueError: invalid literal for int() with base 10: 'exit'
+
+[2019-08-10 19:30:30,334-xvideos_log-ERROR]:
+[Error in exception_handling] msg: [WinError 3] 系统找不到指定的路径。: 'E:\\仓殷禀阜\\xvideos\\03-最佳影片\\2018-09\\REAL VIRGIN TEEN GIRL LOSES HER VIRGINITY AND CRYING \\图片'
+Traceback (most recent call last):
+  File "D:\计算机\Project\xvideos\exception_handling.py", line 23, in wrapper
+    fn(*args, **kwargs)
+  File "D:/计算机/Project/xvideos/down_group.py", line 129, in choice
+    best_videos_pages()
+  File "D:/计算机/Project/xvideos/down_group.py", line 54, in best_videos_pages
+    download_videos_of_one_page(url, os.path.join('03-最佳影片', data))    #视频文件夹保存在root_path/02-最佳影片/年月
+  File "D:/计算机/Project/xvideos/down_group.py", line 26, in download_videos_of_one_page
+    xvideos.download()
+  File "D:\计算机\Project\xvideos\down_one.py", line 291, in download
+    self.download_image()
+  File "D:\计算机\Project\xvideos\down_one.py", line 154, in download_image
+    os.makedirs(os.path.join(self.dir_path, '图片'))
+  File "C:\CS\Anaconda3\lib\os.py", line 221, in makedirs
+    mkdir(name, mode)
+FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'E:\\仓殷禀阜\\xvideos\\03-最佳影片\\2018-09\\REAL VIRGIN TEEN GIRL LOSES HER VIRGINITY AND CRYING \\图片'
+
+[2019-08-10 20:03:27,122-xvideos_log-ERROR]:
+[Error in exception_handling] msg: [WinError 3] 系统找不到指定的路径。: 'E:\\仓殷禀阜\\xvideos\\03-最佳影片\\2018-09\\REAL VIRGIN TEEN GIRL LOSES HER VIRGINITY AND CRYING \\图片'
+Traceback (most recent call last):
+  File "D:\计算机\Project\xvideos\exception_handling.py", line 23, in wrapper
+    fn(*args, **kwargs)
+  File "D:/计算机/Project/xvideos/down_group.py", line 129, in choice
+    best_videos_pages()
+  File "D:/计算机/Project/xvideos/down_group.py", line 54, in best_videos_pages
+    download_videos_of_one_page(url, os.path.join('03-最佳影片', data))    #视频文件夹保存在root_path/02-最佳影片/年月
+  File "D:/计算机/Project/xvideos/down_group.py", line 26, in download_videos_of_one_page
+    xvideos.download()
+  File "D:\计算机\Project\xvideos\down_one.py", line 293, in download
+    self.download_image()
+  File "D:\计算机\Project\xvideos\down_one.py", line 156, in download_image
+    os.makedirs(os.path.join(self.dir_path, '图片'))
+  File "C:\CS\Anaconda3\lib\os.py", line 221, in makedirs
+    mkdir(name, mode)
+FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'E:\\仓殷禀阜\\xvideos\\03-最佳影片\\2018-09\\REAL VIRGIN TEEN GIRL LOSES HER VIRGINITY AND CRYING \\图片'
+
+[2019-08-10 21:56:34,562-xvideos_log-ERROR]:
+[Error in exception_handling] msg: [WinError 3] 系统找不到指定的路径。: 'E:\\仓殷禀阜\\xvideos\\03-最佳影片\\2018-09\\REAL VIRGIN TEEN GIRL LOSES HER VIRGINITY AND CRYING \\图片'
+Traceback (most recent call last):
+  File "D:\计算机\Project\xvideos\exception_handling.py", line 23, in wrapper
+    fn(*args, **kwargs)
+  File "D:/计算机/Project/xvideos/down_group.py", line 129, in choice
+    best_videos_pages()
+  File "D:/计算机/Project/xvideos/down_group.py", line 54, in best_videos_pages
+    download_videos_of_one_page(url, os.path.join('03-最佳影片', data))    #视频文件夹保存在root_path/02-最佳影片/年月
+  File "D:/计算机/Project/xvideos/down_group.py", line 26, in download_videos_of_one_page
+    xvideos.download()
+  File "D:\计算机\Project\xvideos\down_one.py", line 293, in download
+    self.download_image()
+  File "D:\计算机\Project\xvideos\down_one.py", line 156, in download_image
+    os.makedirs(os.path.join(self.dir_path, '图片'))
+  File "C:\CS\Anaconda3\lib\os.py", line 221, in makedirs
+    mkdir(name, mode)
+FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'E:\\仓殷禀阜\\xvideos\\03-最佳影片\\2018-09\\REAL VIRGIN TEEN GIRL LOSES HER VIRGINITY AND CRYING \\图片'
+
