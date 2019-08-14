@@ -43,7 +43,7 @@ windows：[ffmepg](<https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-201907
 
   下载的ts视频需要合并，windows下可自行选择copy/b或ffmpeg合并，linux下采用ffmpeg合并。
 
-  事实证明相较于ffmpeg合并的视频，采用copy/b合并的视频又大又卡又模糊（卡顿十分明显），请自行斟酌。
+  事实证明相较于ffmpeg合并的视频，采用copy/b合并的视频又大又卡又模糊（卡顿十分明显），请自行斟酌（默认ffmpeg，可在**merge_ts_file.py** 修改win_merge的值来更换）
 
 
 ## 文件简介
