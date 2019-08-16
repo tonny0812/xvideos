@@ -6,7 +6,7 @@ import time, os
 @log_exception
 def downloads():
     #dir_name = input('请输入文件夹名称（最终文件存放于root_path/00-来自文本/自定义文件夹名）:')
-    dir_name = '20190802'
+    dir_name = '20190817'
     urls_txt = 'xvideos_urls.txt'
     with open(urls_txt,'r',encoding='utf-8') as f:
         urls_list=f.readlines()
