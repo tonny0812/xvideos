@@ -21,6 +21,7 @@ class UrlManager(object):
     def __init__(self):
         self.new_urls = set()  # 未爬取集合
         self.old_urls = set()  # 已爬取集合
+        self.video_set = set()  # 视频集合
 
     def has_new_url(self):
         '''
@@ -60,8 +61,23 @@ class UrlManager(object):
         for url in urls:
             self.add_new_url(url)
 
+    def add_new_video(self, video):
+        if video is None:
+            return
+        if video not in self.new_urls and video not in self.old_urls:
+            self.video_set.add(video)
+
+    def add_new_videos(self, videos):
+        if videos is None and len(videos) == 0:
+            return
+        for url in videos:
+            self.add_new_video(url)
+
     def new_url_size(self):
         return len(self.new_urls)
 
     def old_url_size(self):
         return len(self.old_urls)
+
+    def video_size(self):
+        return len(self.video_set)

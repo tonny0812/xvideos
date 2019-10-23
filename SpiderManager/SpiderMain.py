@@ -4,10 +4,12 @@
    File Name：     SpiderMain
    Description :  爬虫调度器，首先要对各个模块初始化，然后通过crawl（root_url)，
                   完成流程运转
+
    Author :       qiuqiu
    date：          2019/10/22
 -------------------------------------------------
 """
+import SpiderConfig
 from DataOutput.DataOutput import DataOutput
 from HtmlDownloader.HtmlDownloader import HtmlDownloader
 from HtmlParser.HtmlParser import HtmlParser
@@ -22,29 +24,33 @@ class SpiderMain(object):
         self.output = DataOutput()
 
     def crawl(self, root_url):
-        # 添加入口URL
-        self.manager.add_new_url(root_url)
-        # 判断url管理器中是否有新的url，同时判断抓取了多少个url
-        while (self.manager.has_new_url() and self.manager.old_url_size() < 1):
+        if self.manager.video_size() < SpiderConfig.MAX_NUMBER:
             try:
-                # 从URL管理器获取新的url
-                new_url = self.manager.get_new_url()
                 # HTML下载器下载网页
-                html = self.downloader.download(new_url)
+                html = self.downloader.download(root_url)
                 # HTML解析器抽取网页数据
-                new_urls, data = self.parser.parser(new_url, html)
-                print(new_urls, data)
-                # 将抽取到url添加到URL管理器中
-                self.manager.add_new_urls(new_urls)
+                videos = self.parser.parser(root_url, html)
+                # 将抽取到视频信息url添加到URL管理器中
+                self.manager.add_new_videos(videos)
                 # 数据存储器储存文件
-                self.output.store_data(data)
-                print("已经抓取%s个链接" % self.manager.old_url_size())
+                self.output.store_datas(videos)
+                print("已经抓取%s个视频链接" % self.manager.video_size())
             except Exception as e:
                 print("crawl failed", e)
-            # 数据存储器将文件输出成指定格式
+        # 数据存储器将文件输出成指定格式
         self.output.output_html()
 
 
 if __name__ == "__main__":
     spider_man = SpiderMain()
-    spider_man.crawl("https://www.xvideos.com/video51604517/s-cute_fumika_coitus_with_a_girl_who_has_bazongas_-_nanairo.co")
+
+    urls = ['https://www.xvideos.com', 'https://www.xvideos.com/new/1',
+            'https://www.xvideos.com/new/2', 'https://www.xvideos.com/new/3',
+            'https://www.xvideos.com/new/4', 'https://www.xvideos.com/new/5',
+            'https://www.xvideos.com/new/6', 'https://www.xvideos.com/new/7',
+            'https://www.xvideos.com/new/8', 'https://www.xvideos.com/new/9',
+            'https://www.xvideos.com/new/10', 'https://www.xvideos.com/new/11']
+    # for url in urls:
+    #     print("开始抓取：", url)
+    #     spider_man.crawl(url)
+    spider_man.crawl('https://www.xvideos.com/lang/chinese')

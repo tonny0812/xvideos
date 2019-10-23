@@ -9,6 +9,8 @@
 """
 import requests
 
+import SpiderConfig
+
 
 class HtmlDownloader(object):
 
@@ -18,7 +20,7 @@ class HtmlDownloader(object):
         if proxies is None:
             proxies = {'http': '127.0.0.1:1080', 'https': '127.0.0.1:1080'}
 
-        response = requests.get(url, timeout=timeout, proxies=proxies, headers=headers)
+        response = requests.get(url, timeout=timeout, proxies=proxies, headers=SpiderConfig.get_header())
         if response.status_code == requests.codes.ok:
             return response.content
         return None
