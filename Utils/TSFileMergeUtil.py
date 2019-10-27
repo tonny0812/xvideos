@@ -7,7 +7,6 @@
    date：          2019/10/22
 -------------------------------------------------
 """
-import sys
 import os
 from glob import glob
 

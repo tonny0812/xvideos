@@ -7,20 +7,10 @@
    date：          2019/10/22
 -------------------------------------------------
 """
-import requests
-
-import SpiderConfig
+from Utils import RequestUtil
 
 
 class HtmlDownloader(object):
 
-    def download(self, url, proxies=None, headers={}, timeout=10):
-        if url is None:
-            return None
-        if proxies is None:
-            proxies = {'http': '127.0.0.1:1080', 'https': '127.0.0.1:1080'}
-
-        response = requests.get(url, timeout=timeout, proxies=proxies, headers=SpiderConfig.get_header())
-        if response.status_code == requests.codes.ok:
-            return response.content
-        return None
+    def download(self, url):
+        return RequestUtil.download(url, timeout=10)

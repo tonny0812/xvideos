@@ -18,11 +18,17 @@ class DataOutput(object):
 
     def __init__(self):
         self.videos = []
+        self.ts_videos = []
 
     def store_data(self, video):
         if video is None:
             return
         self.videos.append(video)
+
+    def store_ts_video(self, video):
+        if video is None:
+            return
+        self.ts_videos.append(video)
 
     def store_datas(self, videos):
         if videos is None and len(videos) == 0:
@@ -40,8 +46,14 @@ class DataOutput(object):
             _content.append("<tr>")
             _content.append("<td>")
             _content.append("<img src='%s'/><br/>" % (video.get_img_url()))
-            _content.append("<a href='%s' target='_blank' rel='noopener noreferrer'>%s</a>" % (video.get_url(), video.get_title()))
+            _content.append(
+                "<a href='%s' target='_blank' rel='noopener noreferrer'>%s</a>" % (video.get_url(), video.get_title()))
             _content.append("</td>")
+            _content.append("<td><ui>")
+            for tsurl in video.get_real_url():
+                _content.append(
+                    "<li><a href='%s' target='_blank' rel='noopener noreferrer'>%s</a></li>" % (tsurl, tsurl))
+            _content.append("</ui></td>")
             _content.append("</tr>")
         _content.append("</table>")
         _content.append("</body>")
@@ -49,6 +61,6 @@ class DataOutput(object):
 
         html_cont = ''.join(_content)
         soup = BeautifulSoup(html_cont, "lxml")
-        fout = codecs.open(SpiderConfig.VIDEOS_OUTPUT_FILE_PATH, 'w', encoding='utf-8')
+        fout = codecs.open(SpiderConfig.VIDEOS_OUTPUT_LIST_FILE_PATH, 'w', encoding='utf-8')
         fout.write(soup.prettify())
         fout.close()
