@@ -8,10 +8,13 @@
 -------------------------------------------------
 """
 import codecs
+import os
+import shutil
 
 from bs4 import BeautifulSoup
 
 import SpiderConfig
+from Utils import TSFileMergeUtil
 
 
 class DataOutput(object):
@@ -49,11 +52,9 @@ class DataOutput(object):
             _content.append(
                 "<a href='%s' target='_blank' rel='noopener noreferrer'>%s</a>" % (video.get_url(), video.get_title()))
             _content.append("</td>")
-            _content.append("<td><ui>")
-            for tsurl in video.get_real_url():
-                _content.append(
-                    "<li><a href='%s' target='_blank' rel='noopener noreferrer'>%s</a></li>" % (tsurl, tsurl))
-            _content.append("</ui></td>")
+            _content.append(
+                "<a href='%s' target='_blank' rel='noopener noreferrer'>%s</a>" % (video.get_local_path(), video.get_title()))
+            _content.append("</td>")
             _content.append("</tr>")
         _content.append("</table>")
         _content.append("</body>")
@@ -64,3 +65,16 @@ class DataOutput(object):
         fout = codecs.open(SpiderConfig.VIDEOS_OUTPUT_LIST_FILE_PATH, 'w', encoding='utf-8')
         fout.write(soup.prettify())
         fout.close()
+
+    def mergeTS(self, desc_file_name, temp_dir_path, delete=True):
+        desc_path = os.path.join(SpiderConfig.VIDEOS_OUTPUT_PATH, desc_file_name)
+        if os.path.exists(desc_path):
+            print('目标文件%s已存在' % desc_path)
+        else:
+            os.chdir(temp_dir_path)
+            boxer = TSFileMergeUtil.get_sorted_ts(temp_dir_path)
+            TSFileMergeUtil.convert_m3u8(boxer, desc_path)
+            os.chdir(SpiderConfig.VIDEOS_OUTPUT_PATH)
+            # if delete:
+            #     shutil.rmtree(temp_dir_path)
+        return desc_path

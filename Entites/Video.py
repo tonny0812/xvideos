@@ -39,6 +39,9 @@ class Video(object):
     def get_local_path(self):
         return self.localpath
 
+    def set_local_path(self, localpath):
+        self.localpath = localpath
+
     def __eq__(self, other):
         if isinstance(other, Video):
             return ((self.title == other.title) and (self.url == other.url)) and (self.imgurl == other.imgurl)

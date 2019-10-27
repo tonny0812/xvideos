@@ -50,7 +50,7 @@ class HtmlParser(object):
                 img_url = img_link['data-src']
                 # 拼接成完整网址
                 full_vurl = urllib.parse.urljoin(page_url, url)
-                video = Video(title, full_vurl, img_url)
+                video = Video("".join(title.split()), full_vurl, img_url)
                 videos.add(video)
             except AttributeError as e:
                 print(e)

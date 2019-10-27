@@ -12,13 +12,10 @@ import random
 import requests
 
 
-def download(url, proxies=None, timeout=10):
+def download_content(url, proxies=None, timeout=10):
     if url is None:
         return None
-    if proxies is None:
-        proxies = {'http': '127.0.0.1:1080', 'https': '127.0.0.1:1080'}
-
-    response = requests.get(url, timeout=timeout, proxies=proxies, headers=get_header())
+    response = requests.get(url, proxies=proxies, timeout=timeout, headers=get_header())
     if response.status_code == requests.codes.ok:
         return response.content
     return None
