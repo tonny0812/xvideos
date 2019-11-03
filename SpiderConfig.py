@@ -19,3 +19,7 @@ VIDEOS_OUTPUT_PATH = os.path.join(os.path.dirname(__file__), "视频")
 PROXIES = {'http': '127.0.0.1:1080', 'https': '127.0.0.1:1080'}
 
 PARALLEL_NUM = 5
+
+urls = ['https://www.xvideos.com/%s' % n for n in
+        [''] + ['new/%d' % m for m in list(range(1, 2))] + ['lang/chinese/%s' % p for p in list(range(1, 3))] +
+        ['c/Solo&Masturbation-33'] + ['c/%s/Solo&Masturbation-33' % s for s in list(range(1, 2))]]

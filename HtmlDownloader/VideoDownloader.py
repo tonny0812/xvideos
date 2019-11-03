@@ -12,11 +12,14 @@ import re
 from concurrent.futures import wait, ALL_COMPLETED
 from concurrent.futures.thread import ThreadPoolExecutor
 
+from pySmartDL import SmartDL
+
 import SpiderConfig
+from Entites.Video import Video
 from Utils import RequestUtil
 
 
-class VideoDownloader(object):
+class XVideoDownloader(object):
 
     def __init__(self):
         self.video = None
@@ -55,3 +58,27 @@ class VideoDownloader(object):
                 self.count += 1
                 self.ts_file_list.append(ts_path)
             print("\r视频进度：%.2f%%" % (self.count / self.ts_num * 100), end=' ')
+
+class XNXXVideoDownloader(object):
+    def __init__(self):
+        self.video = None
+
+    def set_video(self, video):
+        self.video = video
+
+    def download_parallel(self):
+        file_path = os.path.join(SpiderConfig.VIDEOS_OUTPUT_TEMP_PATH, self.video.get_title())
+        if not os.path.exists(file_path):
+            os.makedirs(file_path)
+        self.download(file_path, self.video.get_title() + '.mp4', self.video.get_url())
+        return file_path
+
+    def download(self, parent_path, filename, url):
+        obj = SmartDL(url, parent_path)
+        obj.start()
+
+if __name__ == "__main__":
+    d = XNXXVideoDownloader()
+    video = Video('S-Cute', 'https://vid-egc.xnxx-cdn.com/videos/mp4/3/e/a/xvideos.com_3eabfb06537aacf1f8c7ef09022108c3-1.mp4?Sk6tylpHMgUFALI-IFFhxjqKZPedahTPWg1nkkvaBN4QB3tIwJ-27_9Vn4X_m3ekBa3CIHk5roQPLyPtlmUaVg3dsDPLnpR2fNUh49_4y-AoS1MBEihjQvSxvN2B8wpPcoGvs_SoyTslc1S_bzGvYkYZT7VPBL3ilHd0dKVXXILQ2V2rfrkFFs2kB5Wc0YUMK3gdlAjxwiYzwQ&ui=MTcyLjk2LjIxOS41MC0vdmlkZW8taDViMzcyNy9zLWN1dGU=')
+    d.set_video(video)
+    d.download_parallel()
