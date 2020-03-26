@@ -52,11 +52,17 @@ class Xvideos:
                 return False
 
     def request(self, url, headers={}):
-        if os.name == 'nt':  # windows
-            proxies = {'http': '127.0.0.1:1080', 'https': '127.0.0.1:1080'}  # ssr的win客户端采用1080端口的http协议
-        elif os.name == 'posix':  # linux
-            proxies = {'http': '127.0.0.1:8118',
-                       'https': '127.0.0.1:8118'}  # ssr+privoxy,通过privoxy将1080端口的socks协议转发给8118端口的http协议
+        default_http_proxy = '127.0.0.1:1080' if os.name == 'nt' else '127.0.0.1:8118'
+        http_proxy = os.getenv('http_proxy') or os.getenv('HTTP_PROXY') or default_http_proxy
+        https_proxy = os.getenv('https_proxy') or os.getenv('HTTPS_PROXY') or default_http_proxy
+        proxies = { 'http': http_proxy, 'https': https_proxy }
+
+        # if os.name == 'nt':  # windows
+        #     proxies = {'http': '127.0.0.1:1080', 'https': '127.0.0.1:1080'}  # ssr的win客户端采用1080端口的http协议
+        # elif os.name == 'posix':  # linux
+        #     proxies = {'http': '127.0.0.1:10809',
+        #                'https': '127.0.0.1:10809'}  # ssr+privoxy,通过privoxy将1080端口的socks协议转发给10809端口的http协议
+
         response = requests.get(url, timeout=self.timeout, proxies=proxies, headers=headers)
         return response.content
 
