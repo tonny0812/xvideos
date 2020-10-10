@@ -65,11 +65,9 @@ def merge_less_100(ts_file_list, dir_path, name):
     elif os.name == 'posix':    #linux采用ffmpeg合并  #ffmpeg后面加上-logevel quiet 不向控制台打印信息  #-crf 0为无损  #-y遇到同名文件则覆盖
         command = ''
         command += 'cd "%s" && '%dir_path2    #进入视频所在路径
-        command += 'ffmpeg -i "concat:%s" -y -loglevel quiet -acodec copy -vcodec copy -crf 0 "%s" && '%(input_file,output_file)    #使用ffmpeg将ts合并为mp4
-        for i in ts_file_list:
-            command += 'rm -rf %s && '%i
-        
-    #os.popen(command).read()    #os.pepen不会弹出cmd的黑框    #使用read()巧妙地阻塞os.popen
+        command += 'ffmpeg -i "concat:%s" -y -loglevel quiet -acodec copy -vcodec copy -crf 0 "%s" && rm -rf *.ts' % (
+            input_file, output_file)  # 使用ffmpeg将ts合并为mp4
+        os.popen(command).read()
     '''
     1、多条命令时不能调用多个os.system或os.popen命令
        因为每条命令都是单独的一个进程

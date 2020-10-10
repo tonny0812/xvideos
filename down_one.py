@@ -52,7 +52,7 @@ class Xvideos:
                 return False
 
     def request(self, url, headers={}):
-        default_http_proxy = '127.0.0.1:1080' if os.name == 'nt' else '127.0.0.1:8118'
+        default_http_proxy = '127.0.0.1:1080' if os.name == 'nt' else '127.0.0.1:53388'
         http_proxy = os.getenv('http_proxy') or os.getenv('HTTP_PROXY') or default_http_proxy
         https_proxy = os.getenv('https_proxy') or os.getenv('HTTPS_PROXY') or default_http_proxy
         proxies = { 'http': http_proxy, 'https': https_proxy }
