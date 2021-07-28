@@ -227,7 +227,7 @@ class Xvideos:
             base_url = re.search(r"(.*?)hls.m3u8", m3u8_url).group(1)  # 从m3u8_url中取出，留待拼接
             m3u8_content = m3u8_content.decode('utf-8')
             definition_list = re.findall(r'NAME="(.*?)p"', m3u8_content)
-            max_definition = max(definition_list)  # 找到最高清晰度
+            max_definition = str(max(list(map(int,definition_list))))  # 找到最高清晰度
             line_list = m3u8_content.split('\n')
             for line in line_list:
                 if 'hls-' in line and max_definition in line:
