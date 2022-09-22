@@ -176,8 +176,8 @@ class Xvideos:
 
     def download_preview_video(self):  # 下载预览视频
         if not '预览.mp4' in os.listdir(self.dir_path):
-            re_str = r'/videos/thumbs169/(.*?)/mozaique'
-            key = re.search(re_str, self.html).group(1)
+            re_str = r'/videos(_new)?/thumbs169/(.*?)/mozaique'
+            key = re.search(re_str, self.html).group(2)
             url = r'https://img-hw.xvideos-cdn.com/videos/videopreview/%s_169.mp4' % key  # 以后下载预览视频失败时先检查对应的解析域名是否改变了
             video_data = self.repeat_request(url, fail_hint='"preview_video fail and retry %d"%retry_times',
                                              final_fail_hint='preview_video final fail!')
